@@ -1,5 +1,6 @@
-import numpy as np
 import hickle as hkl
+import numpy as np
+
 
 def one_hot(x, n):
     """
@@ -14,11 +15,9 @@ def _load_batch(path, dtype='float64'):
     """
     load a batch of images
     """
-    #batch = np.load(path)
     batch = hkl.load(path + '_data.hpy')
     data = batch / 255.0 # scale between [0, 1]
     labels = one_hot(hkl.load(path + '_labels.hpy'), n=5)  # convert labels to one-hot representation with 5 classes
-    #labels = hkl.load(path + '_labels.hpy')
     return data.astype(dtype), labels.astype(dtype)
 
 
