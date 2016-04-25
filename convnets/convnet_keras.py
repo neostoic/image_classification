@@ -13,29 +13,36 @@ save it in a different format, load it in Python 3 and repickle it.
 
 from __future__ import print_function
 
-import theano
+import numpy as np
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.models import Sequential
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 
-import load_yelp_data as load
+from load_yelp_data import load_yelp_data
+
+MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
 
 def train():
-    batch_size = 64
+    batch_size = 32
     nb_classes = 5
     nb_epoch = 200
     data_augmentation = True
+    model_ = 'VGG_16'
 
     # input image dimensions
-    img_rows, img_cols = batch_size, batch_size
+    if model_ in MODELS[0:2]:
+        img_rows, img_cols = 224, 224
+    if model_ in MODELS[3]:
+        img_rows, img_cols = 299, 299
     # the CIFAR10 images are RGB
     img_channels = 3
 
     # the data, shuffled and split between train and test sets
-    (X_train, y_train), (X_test, y_test) = load.yelp_data(dtype=theano.config.floatX, grayscale=False, pixels=img_rows)
+    (X_train, y_train), (X_test, y_test) = load_yelp_data(dtype=np.float32, grayscale=False, pixels=img_rows, batches=2,
+                                                          model=model_, data_dir='/home/rcamachobarranco/datasets/')
     print('X_train shape:', X_train.shape)
     print(X_train.shape[0], 'train samples')
     print(X_test.shape[0], 'test samples')
