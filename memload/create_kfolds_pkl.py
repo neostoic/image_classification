@@ -26,7 +26,7 @@ if len(sys.argv) > 2:
     # from sklearn.model_selection import StratifiedKFold
     # df = pd.read_pickle(filename)
     # df['label'] = df['label'].astype('category')
-    # f = open('categories.pkl', 'wb')
+    # f = open('./data/categories.pkl', 'wb')
     # cPickle.dump(df['label'].cat.categories, f, protocol=cPickle.HIGHEST_PROTOCOL)
     # f.close()
     # df['label'] = df['label'].cat.codes.values

@@ -20,7 +20,7 @@ from keras.models import Sequential
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 
-from load_yelp_data import load_yelp_data
+from memload.load_yelp_data import load_yelp_data
 
 MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 

@@ -13,181 +13,151 @@ save it in a different format, load it in Python 3 and repickle it.
 
 from __future__ import print_function
 
+import lasagne
 import numpy as np
+import cPickle as pickle
 import os
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.models import Sequential
-from keras.optimizers import SGD
-from keras.preprocessing.image import ImageDataGenerator
+import theano
+import theano.tensor as T
+
+import matplotlib.pyplot as plt
+
+from lasagne.layers import InputLayer, DenseLayer, NonlinearityLayer
+from lasagne.layers import Conv2DLayer as ConvLayer
+from lasagne.layers import Pool2DLayer as PoolLayer
+from lasagne.nonlinearities import softmax
+from lasagne.utils import floatX
 from multiprocessing import freeze_support
 
 from batches.batchgen import BatchGen
 from batches.load_batch import batch
+import models.vgg16 as vgg16
+import models.vgg19 as vgg19
+import models.googlenet as googlenet
+import models.inception_v3 as inception_v3
 
 MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
-
+# Config 23090 (8, 100, 5, 10, 0.001)
+# Config 23091 (8, 100, 5, 10, 0.0001)
+# Config 23092 (32, 100, 5, 50, 0.01)
+# Config 23093 (32, 100, 5, 50, 0.001)
+# Config 23094 (16, 100, 5, 50, 0.0001)
+# Config 23095 (16, 100, 5, 50, 0.001) vgg16
+# Config 23096 (16, 100, 5, 50, 0.001) googlenet
+# Config 23099 (16, 100, 5, 50, 0.001) vgg16 with 1000 test samples
+# Config 23100 (16, 100, 5, 50, 0.001) googlenet with 1000 test samples
+# Config 23101 (16, 100, 5, 50, 0.0001) vgg16 with 1000 test samples
+# Config 23102 (16, 100, 5, 50, 0.0001) googlenet with 1000 test samples
+# Config 23103 (16, 100, 5, 50, 0.00001) googlenet with 1000 test samples
 def train(model_='VGG_16'):
-    batch_size = 8
-    nb_samples = 2000
+    batch_size = 16
+    nb_samples = 100
     nb_classes = 5
-    nb_epoch = 10
+    nb_test_samples = 1000
+    nb_epoch = 50
     data_augmentation = False
 
     if os.name in ['nt']:
         train_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_train.pkl'
         test_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_test.pkl'
         img_path = r'D:\Yelp\restaurant_photos\\'
+        CLASSES = pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Code\data\categories.pkl', 'rb'))
+        model_path = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\\'
     else:
         train_pkl = r'/home/rcamachobarranco/datasets/restaurant_photos_with_labels_train.pkl'
         test_pkl = r'/home/rcamachobarranco/datasets/restaurant_photos_with_labels_test.pkl'
         img_path = r'/home/rcamachobarranco/datasets/restaurant_photos/'
+        CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
+        model_path = r'/home/rcamachobarranco/datasets/'
 
     # input image dimensions
-    if model_ in MODELS[0:2]:
-        img_rows, img_cols = 32, 32
+    if model_ in MODELS[0:3]:
+        img_rows, img_cols = 224, 224
     if model_ in MODELS[3]:
         img_rows, img_cols = 299, 299
-    # the CIFAR10 images are RGB
-    img_channels = 3
 
     # generate model
     if model_ in MODELS[0]:
-        network = VGG_16(img_rows, img_cols, img_channels, nb_classes)
+        net = vgg16.build_model()
+        weights = pickle.load(open(model_path + 'vgg16.pkl', 'rb'))
+    elif model_ in MODELS[1]:
+        net = vgg19.build_model()
+        weights = pickle.load(open(model_path + 'vgg19.pkl', 'rb'))
+    elif model_ in MODELS[2]:
+        net = googlenet.build_model()
+        weights = pickle.load(open(model_path + 'googlenet.pkl', 'rb'))
+    elif model_ in MODELS[3]:
+        net = inception_v3.build_network()
+        weights = pickle.load(open(model_path + 'inception_v3.pkl', 'rb'))
 
-    # let's train the model using SGD + momentum (how original).
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-    network.compile(loss='categorical_crossentropy', optimizer=sgd)
+    lasagne.layers.set_all_param_values(net['prob'], weights['param values'])
+    print('Finished setting up weights')
 
-    with BatchGen(batch, seed=1, num_workers=1, train_pkl=train_pkl, test_pkl=test_pkl, img_path=img_path,
-                  dtype=np.float32, pixels=img_rows, model=model_, batch_size=batch_size) as bg:
-        for i in range(nb_samples):
-            minibatch = next(bg)
-            X_train = minibatch['x_train']
-            y_train = minibatch['y_train']
-            X_test = minibatch['x_test']
-            y_test = minibatch['y_test']
+    if model_ in MODELS[0]:
+        output_layer = DenseLayer(net['fc7'], num_units=len(CLASSES), nonlinearity=softmax)
+    elif model_ in MODELS[1]:
+        output_layer = DenseLayer(net['fc7_dropout'], num_units=len(CLASSES), nonlinearity=softmax)
+    elif model_ in MODELS[2]:
+        output_layer = DenseLayer(net['pool5/7x7_s1'], num_units=len(CLASSES), nonlinearity=softmax)
+    elif model_ in MODELS[3]:
+        output_layer = DenseLayer(net['pool3'], num_units=len(CLASSES), nonlinearity=softmax)
 
-            print('X_train shape:', X_train.shape)
-            print(X_train.shape[0], 'train samples')
-            print(X_test.shape[0], 'test samples')
+    # Define loss function and metrics, and get an updates dictionary
+    X_sym = T.tensor4()
+    y_sym = T.ivector()
 
-            if not data_augmentation:
-                print('Not using data augmentation.')
-                network.fit(X_train, y_train, batch_size=batch_size,
-                            nb_epoch=nb_epoch, show_accuracy=True,
-                            validation_data=(X_test, y_test), shuffle=True)
-            else:
-                print('Using real-time data augmentation.')
+    prediction = lasagne.layers.get_output(output_layer, X_sym)
+    loss = lasagne.objectives.categorical_crossentropy(prediction, y_sym)
+    loss = loss.mean()
 
-                # this will do preprocessing and realtime data augmentation
-                datagen = ImageDataGenerator(
-                    featurewise_center=False,  # set input mean to 0 over the dataset
-                    samplewise_center=False,  # set each sample mean to 0
-                    featurewise_std_normalization=False,  # divide inputs by std of the dataset
-                    samplewise_std_normalization=False,  # divide each input by its std
-                    zca_whitening=False,  # apply ZCA whitening
-                    rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-                    width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-                    height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-                    horizontal_flip=True,  # randomly flip images
-                    vertical_flip=False)  # randomly flip images
+    acc = T.mean(T.eq(T.argmax(prediction, axis=1), y_sym),
+                 dtype=theano.config.floatX)
 
-                # compute quantities required for featurewise normalization
-                # (std, mean, and principal components if ZCA whitening is applied)
-                datagen.fit(X_train)
+    params = lasagne.layers.get_all_params(output_layer, trainable=True)
+    updates = lasagne.updates.nesterov_momentum(
+        loss, params, learning_rate=0.00001, momentum=0.9)
 
-                # fit the model on the batches generated by datagen.flow()
-                network.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
-                                      samples_per_epoch=X_train.shape[0],
-                                      nb_epoch=nb_epoch, show_accuracy=True,
-                                      validation_data=(X_test, y_test),
-                                      nb_worker=1)
+    print('Created model, compiling functions')
+    # Compile functions for training, validation and prediction
+    train_fn = theano.function([X_sym, y_sym], loss, updates=updates)
+    val_fn = theano.function([X_sym, y_sym], [loss, acc])
+    pred_fn = theano.function([X_sym], prediction)
+    print('Compiled functions, creating batchgen object')
 
+    with BatchGen(batch, seed=1, num_workers=1, input_pkl=train_pkl, img_path=img_path,
+                  dtype=np.float32, pixels=img_rows, model=model_, batch_size=batch_size) as train_bg:
+        with BatchGen(batch, seed=1, num_workers=1, input_pkl=test_pkl, img_path=img_path,
+                      dtype=np.float32, pixels=img_rows, model=model_, batch_size=batch_size) as test_bg:
+            print('Created batchgen object')
+            for epoch in range(nb_epoch):
+                print('Epoch', epoch)
+                for sample in range(nb_samples):
+                    sample = next(train_bg)
+                    X_train = sample['x']
+                    y_train = sample['y']
 
-def VGG_16(img_rows, img_cols, img_channels=3, nb_classes=5, weights_path=None):
-    model = Sequential()
-    model.add(ZeroPadding2D((1, 1), input_shape=(img_channels, img_rows, img_cols)))
-    model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(64, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+                    train_loss = train_fn(X_train, y_train)
+                    loss_tot = 0.
+                    acc_tot = 0.
 
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(128, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+                    for chunk in range(nb_test_samples):
+                        test_sample = next(test_bg)
+                        X_test = test_sample['x']
+                        y_test = test_sample['y']
+                        test_loss, acc = val_fn(X_test, y_test)
+                        loss_tot += test_loss
+                        acc_tot += acc
 
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+                    loss_tot /= nb_test_samples
+                    acc_tot /= nb_test_samples
 
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(512, 3, 3, activation='relu'))
-    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
-
-    model.add(Flatten())
-    model.add(Dense(4096, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(4096, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(nb_classes, activation='softmax'))
-
-    if weights_path:
-        model.load_weights(weights_path)
-
-    return model
-
-
-def CIFAR_10(img_rows, img_cols, img_channels=3, nb_classes=5, weights_path=None):
-    model = Sequential()
-
-    model.add(Convolution2D(32, 3, 3, border_mode='same',
-                            input_shape=(img_channels, img_rows, img_cols)))
-    model.add(Activation('relu'))
-    model.add(Convolution2D(32, 3, 3))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Convolution2D(64, 3, 3, border_mode='same'))
-    model.add(Activation('relu'))
-    model.add(Convolution2D(64, 3, 3))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Flatten())
-    model.add(Dense(512))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(nb_classes))
-    model.add(Activation('softmax'))
-
-    if weights_path:
-        model.load_weights(weights_path)
-
-    return model
+                    print(epoch, train_loss, loss_tot, acc_tot * 100)
+    param_values = lasagne.layers.get_all_params(output_layer)
+    pickle.dump(param_values, open(r'/home/rcamachobarranco/datasets/googlenet_params.pkl', 'wb'),
+                protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == '__main__':
     freeze_support()
-    train('VGG_16')
+    train('googlenet')

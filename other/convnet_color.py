@@ -4,7 +4,7 @@ import theano.tensor as T
 from theano.tensor.nnet.conv import conv2d
 from theano.tensor.signal.downsample import max_pool_2d
 
-import load_yelp_data as load
+from memload import load_yelp_data as load
 
 pixels = 64
 

@@ -13,15 +13,14 @@ save it in a different format, load it in Python 3 and repickle it.
 
 from __future__ import print_function
 
-import theano
+import numpy as np
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.models import Sequential
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 
-from load_yelp_data import yelp_data
-import numpy as np
+from memload.load_yelp_data import yelp_data
 
 MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
