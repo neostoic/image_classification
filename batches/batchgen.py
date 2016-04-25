@@ -1,15 +1,13 @@
-"""
-Context manager to generate batches in the background via a process pool
-Usage:
-
-def batch(seed):
-   .... # generate minibatch
-   return minibatch
-
-with BatchGenCM(batch) as bg:
-   minibatch = next(bg)
-   .... # do something with minibatch
-"""
+# Context manager to generate batches in the background via a process pool
+# Usage:
+#
+# def batch(seed):
+#    .... # generate minibatch
+#    return minibatch
+#
+# with BatchGenCM(batch) as bg:
+#    minibatch = next(bg)
+#    .... # do something with minibatch
 
 import os
 import uuid
