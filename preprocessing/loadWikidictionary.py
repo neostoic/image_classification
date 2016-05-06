@@ -1,3 +1,4 @@
+# Script that creates a corpus from the Wikipedia data
 import logging
 import itertools
 import sys
