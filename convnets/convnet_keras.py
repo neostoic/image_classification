@@ -1,15 +1,8 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
+# Train two simple deep CNN on the Yelp small images (64 x 64 pixels) dataset.
 
-GPU run command:
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cifar10_cnn.py
+# GPU run command:
+#    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_keras.py
 
-It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
-(it's still underfitting at that point, though).
-
-Note: the data was pickled with Python 2, and some encoding issues might prevent you
-from loading it in Python 3. You might have to load it in Python 2,
-save it in a different format, load it in Python 3 and repickle it.
-'''
 
 from __future__ import print_function
 
@@ -37,7 +30,7 @@ def train():
         img_rows, img_cols = 224, 224
     if model_ in MODELS[3]:
         img_rows, img_cols = 299, 299
-    # the CIFAR10 images are RGB
+    # the Yelp images are RGB
     img_channels = 3
 
     # the data, shuffled and split between train and test sets
@@ -50,7 +43,7 @@ def train():
     # generate model
     model = VGG_16(img_rows, img_cols, img_channels, nb_classes)
 
-    # let's train the model using SGD + momentum (how original).
+    # let's train the model using SGD + momentum
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd)
 
@@ -87,6 +80,7 @@ def train():
                             nb_worker=1)
 
 
+# Define the VGG_16 model structure
 def VGG_16(img_rows, img_cols, img_channels=3, nb_classes=5, weights_path=None):
     model = Sequential()
     model.add(ZeroPadding2D((1, 1), input_shape=(img_channels, img_rows, img_cols)))
@@ -138,6 +132,7 @@ def VGG_16(img_rows, img_cols, img_channels=3, nb_classes=5, weights_path=None):
     return model
 
 
+# Define the CIFAR_10 based model
 def CIFAR_10(img_rows, img_cols, img_channels=3, nb_classes=5, weights_path=None):
     model = Sequential()
 
