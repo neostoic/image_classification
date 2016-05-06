@@ -1,15 +1,5 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
-
-GPU run command:
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python cifar10_cnn.py
-
-It gets down to 0.65 test logloss in 25 epochs, and down to 0.55 after 50 epochs.
-(it's still underfitting at that point, though).
-
-Note: the data was pickled with Python 2, and some encoding issues might prevent you
-from loading it in Python 3. You might have to load it in Python 2,
-save it in a different format, load it in Python 3 and repickle it.
-'''
+# Train two simple deep CNN on the Yelp using batch processing in Griffin cluster.
+# GPU Usage: `THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_pretrained.py`
 
 from __future__ import print_function
 
@@ -38,9 +28,11 @@ import models.inception_v3 as inception_v3
 
 import logging
 
+# Initialize logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
+# Configurations used:
 # Config 23090 (8, 100, 5, 10, 0.001)
 # Config 23091 (8, 100, 5, 10, 0.0001)
 # Config 23092 (32, 100, 5, 50, 0.01)
@@ -68,6 +60,7 @@ def train(model_='VGG_16'):
     nb_epoch = 50
     data_augmentation = False
 
+    # Change paths based on where we are testing
     if os.name in ['nt']:
         train_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_train.pkl'
         test_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_test.pkl'
@@ -103,11 +96,12 @@ def train(model_='VGG_16'):
     elif model_ in MODELS[3]:
         net = inception_v3.build_network()
         weights = pickle.load(open(model_path + 'inception_v3.pkl', 'rb'))
-	net_prob = net['softmax']
+    net_prob = net['softmax']
 
     lasagne.layers.set_all_param_values(net_prob, weights['param values'])
     logging.info('Finished setting up weights')
 
+    # Depending on the model is where we will connect our new classifier
     if model_ in MODELS[0]:
         output_layer = DenseLayer(net['fc7'], num_units=len(CLASSES), nonlinearity=softmax)
     elif model_ in MODELS[1]:
@@ -132,7 +126,9 @@ def train(model_='VGG_16'):
     acc = T.mean(T.eq(T.argmax(prediction, axis=1), y_sym),
                  dtype=theano.config.floatX)
 
+    # Define the model parameters as trainable
     params = lasagne.layers.get_all_params(output_layer, trainable=True)
+    # Define the parameter updates
     updates = lasagne.updates.nesterov_momentum(
         loss, params, learning_rate=0.001, momentum=0.9)
 
@@ -143,6 +139,7 @@ def train(model_='VGG_16'):
     pred_fn = theano.function([X_sym], prediction)
     logging.info('Compiled functions, creating batchgen object')
 
+    # Using batch generation, train the dataset
     with BatchGen(batch, seed=1, num_workers=1, input_pkl=train_pkl, img_path=img_path,
                   dtype=np.float32, pixels=img_rows, model=model_, batch_size=batch_size) as train_bg:
         with BatchGen(batch, seed=1, num_workers=1, input_pkl=test_pkl, img_path=img_path,
@@ -154,10 +151,12 @@ def train(model_='VGG_16'):
                     X_train = sample['x']
                     y_train = sample['y']
 
+                    # Train current chunk
                     train_loss = train_fn(X_train, y_train)
                     loss_tot = 0.
                     acc_tot = 0.
 
+                    # Test for many more samples
                     for chunk in range(nb_test_samples):
                         test_sample = next(test_bg)
                         X_test = test_sample['x']
@@ -166,14 +165,13 @@ def train(model_='VGG_16'):
                         loss_tot += test_loss
                         acc_tot += acc
 
+                    # Compute the test loss and accuracy
                     loss_tot /= nb_test_samples
                     acc_tot /= nb_test_samples
 
+                    # Store the model if accuracy is above 86%
                     if acc_tot > 0.86:
                         np.savez('/home/rcamachobarranco/datasets/googlenet_{0:.4g}.npz'.format(acc_tot * 100), *lasagne.layers.get_all_param_values(output_layer))
-                        #param_values = lasagne.layers.get_all_params(output_layer)
-                        #pickle.dump(param_values, open(r'/home/rcamacho/dm/datasets/googlenet_{0:.4g}.pkl'.format(acc_tot * 100), 'wb'),
-                        #protocol=pickle.HIGHEST_PROTOCOL)
 
                     logging.info('Epoch {0} Train_loss {1} Test_loss {2} Test_accuracy {3}'.format(epoch, train_loss, loss_tot, acc_tot * 100))
     

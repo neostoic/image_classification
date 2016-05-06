@@ -1,10 +1,10 @@
-#Batch Generator scripts
+##Batch Generator scripts
 
 This folder contains all the scripts required for image batch generation which was required to be able to 
 handle images of larger size (224 x 224 pixels). Scripts that do not have a usage defined are mostly helper scripts
 called from other scripts or have hard-coded parameters.
 
-## Structure
+### Structure
 
 In this section, we describe the functionality of each script:
 * `__init__.py`: This file is empty and it is only included as a requirement for all packages.
