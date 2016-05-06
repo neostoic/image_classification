@@ -1,19 +1,17 @@
 # coding: utf-8
 
-# # Image Captioning with LSTM
-# 
+# This script uses a CNN model to obtain image features for all of the images in the dataset which will be used by the
+# captioning algorithm
 
 import cPickle as pickle
 import json
 import logging
 
 import lasagne
+import matplotlib.pyplot as plt
 import numpy as np
 import skimage.transform
 import theano
-
-import matplotlib.pyplot as plt
-
 from lasagne.layers import DenseLayer, NonlinearityLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.utils import floatX
@@ -44,24 +42,14 @@ get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cn
 logging.info('Compiled new functions')
 
 # Load the pretrained weights into the network
-# model_param_values = \
-#    pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_model_84_92.pkl', mode='r'))
-
 with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
      model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 logging.info('Read parameters from file')
 
-#model_param_values = \
-#    pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\googlenet_model_84_92.pkl', mode='rb'))
-
-
-# pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_85_32.pkl', mode='rb'))[
-#    'param values']
 lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
 logging.info('All parameters are set') 
 
 # The images need some preprocessing before they can be fed to the CNN
-
 MEAN_VALUES = np.array([104, 117, 123]).reshape((3, 1, 1))
 
 
@@ -94,7 +82,8 @@ def prep_image(im):
 dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
 logging.info('JSON dataset loaded')
 
-# Iterate over the dataset and add a field 'cnn features' to each item. This will take quite a while.
+
+# Iterate over the dataset and add a field 'cnn features' to each item.
 def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
@@ -109,12 +98,13 @@ for chunk in chunks(dataset, 256):
             cnn_input[i] = prep_image(im)
         except IOError:
             continue
+    # Obtain the CNN features to append them to the JSON data
     features = get_cnn_features(cnn_input)
     for i, image in enumerate(chunk):
         image['cnn features'] = features[i]
 logging.info('Finished extracting features')
 
-# Save the final product
+# Save the dataset as a compressed pickle file
 pickle.dump(dataset, open('/home/rcamachobarranco/datasets/caption_dataset/image_caption_with_cnn_features.pkl', 'w'),
             protocol=pickle.HIGHEST_PROTOCOL)
 logging.info('Data pickled correctly, we are done!')

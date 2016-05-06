@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# This script takes as input the JSON file with the predicted labels/captions and stores the records in a sqlite db
 import json
 import sqlite3
 
@@ -7,10 +8,13 @@ import sqlite3
 JSON_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.json"
 DB_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.db"
 
+# Load dataset and initialize DB
 dataset = json.load(open(JSON_FILE))
 conn = sqlite3.connect(DB_FILE)
 
+# Connect to DB
 c = conn.cursor()
+# Create table
 c.execute('''create table images
     (photo_id text primary key,
     yelp_id text,
@@ -27,6 +31,7 @@ c.execute('''create table images
     predicted_caption_4 text,
     predicted_caption_5 text)''')
 
+# Loop through all the records on the JSON file and add the data to a query that adds a row at a time to the DB
 for row in dataset['images']:
     data = []
     photoid = row['photoid']
@@ -58,7 +63,9 @@ for row in dataset['images']:
     predicted_4 = row['predicted caption'][4]
     data.append(predicted_4)
 
+    # Insert row to DB
     c.execute('insert into images values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)', data)
 
+# Commit the changes to the DB
 conn.commit()
 c.close()

@@ -1,3 +1,6 @@
+# This script changes the JSON format so that it is compatible with the captioning algorithm, changing it to a dictionary.
+# The format is very similar to the one used by MS COCO dataset. It also tokenizes each caption and splits the images
+# based on which dataset they belong to: train/test/validation
 import json
 import shutil
 
@@ -11,16 +14,20 @@ img_path = r'D:\Yelp\restaurant_photos\\'
 sentid = 1
 img_list = []
 
+# Split data in such a way that labels are evenly distributed between 6 folds
 skf = StratifiedKFold(photos['label'], n_folds=6)
 
 folds = []
+# Initialize all images to train dataset initially
 photos['split'] = ['train' for i in range(len(photos))]
 
+# Obtain the indices for the test and validation splits and change value appropriately
 for _, test_ix in skf:
     folds.append(test_ix)
 photos.split[folds[0]] = 'test'
 photos.split[folds[1]] = 'val'
 
+# Obtain the information from each picture and move the pictures to the appropriate dir. The images are renamed.
 for i, photo_id in enumerate(photos.photo_id):
     img_dict = dict()
     img_dict['sentids'] = [sentid]
@@ -42,6 +49,7 @@ for i, photo_id in enumerate(photos.photo_id):
     img_dict['label'] = photos.label[i]
     caption_dict = dict()
     if photos.caption[i]:
+        # Tokenize the captions
         caption_dict['tokens'] = tkn.tokenize(photos.caption[i])
         caption_dict['raw'] = photos.caption[i]
     else:
@@ -55,5 +63,6 @@ for i, photo_id in enumerate(photos.photo_id):
     img_list.append(img_dict)
     sentid += 1
 
+# Store the new dataset as a JSON file
 with open("image_dataset.json", "w") as outfile:
     json.dump(img_list, outfile)

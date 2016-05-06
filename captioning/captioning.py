@@ -1,45 +1,50 @@
-import pickle
+# This script uses the CNN model and the LSTM model trained previously to obtain the predicted captions for all of the
+# images in the dataset and creates a new JSON file that contains the predicted captions
+
 import json
+import logging
+import pickle
 
 import lasagne
+import matplotlib.pyplot as plt
 import numpy as np
 import skimage.transform
 import theano
 import theano.tensor as T
-import matplotlib.pyplot as plt
 from lasagne.layers import DenseLayer, NonlinearityLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.utils import floatX
+
 from models import googlenet
 
-import logging
-
+# Read the dictionary with the classes
 CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
 
+# Initialize logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-# Build the model and select layers we need - the features are taken from the final network layer, before the softmax nonlinearity.
+# Build the CNN model and select layers we need - the features are taken from the final network layer,
+# before the softmax classifier.
 cnn_layers = googlenet.build_model()
 logging.info('GoogleNet model built')
 cnn_input_var = cnn_layers['input'].input_var
 cnn_feature_layer = DenseLayer(cnn_layers['pool5/7x7_s1'],
-                                     num_units=len(CLASSES),
-                                     nonlinearity=linear)
+                               num_units=len(CLASSES),
+                               nonlinearity=linear)
 cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
-                                nonlinearity=softmax)
+                                     nonlinearity=softmax)
 
 get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cnn_feature_layer))
 
 # Load the pretrained weights into the network
 with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
-     model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
+    model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 logging.info('Read parameters from file')
 
 lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
-logging.info('All parameters are set') 
+logging.info('All parameters are set')
 
 # The images need some preprocessing before they can be fed to the CNN
-
 MEAN_VALUES = np.array([104, 117, 123]).reshape((3, 1, 1))
 
 
@@ -68,6 +73,7 @@ def prep_image(im):
     return floatX(im[np.newaxis])
 
 
+# Initialize parameters from RNN
 SEQUENCE_LENGTH = 32
 MAX_SENTENCE_LENGTH = SEQUENCE_LENGTH - 3  # 1 for image, 1 for start token, 1 for end token
 BATCH_SIZE = 1
@@ -80,6 +86,7 @@ vocab = d['vocab']
 word_to_index = d['word_to_index']
 index_to_word = d['index_to_word']
 
+# Build the LSTM model without the parameters
 l_input_sentence = lasagne.layers.InputLayer((BATCH_SIZE, SEQUENCE_LENGTH - 1))
 l_sentence_embedding = lasagne.layers.EmbeddingLayer(l_input_sentence,
                                                      input_size=len(vocab),
@@ -104,11 +111,13 @@ l_decoder = lasagne.layers.DenseLayer(l_shp, num_units=len(vocab), nonlinearity=
 
 l_out = lasagne.layers.ReshapeLayer(l_decoder, (BATCH_SIZE, SEQUENCE_LENGTH, len(vocab)))
 
+# Initialize the parameters for the trained model
 lasagne.layers.set_all_param_values(l_out, d['param values'])
 
 x_cnn_sym = T.matrix()
 x_sentence_sym = T.imatrix()
 
+# Define the output function
 output = lasagne.layers.get_output(l_out, {
     l_input_sentence: x_sentence_sym,
     l_input_cnn: x_cnn_sym
@@ -117,6 +126,7 @@ output = lasagne.layers.get_output(l_out, {
 f = theano.function([x_cnn_sym, x_sentence_sym], output)
 
 
+# Define the function used to predict a caption using #START# and #END# as markers.
 def predict(x_cnn):
     x_sentence = np.zeros((BATCH_SIZE, SEQUENCE_LENGTH - 1), dtype='int32')
     words = []
@@ -140,9 +150,11 @@ def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
+
 # Load the caption data
 dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
 
+# Predict 5 captions per image for all of the images in the dataset
 for chunk in chunks(dataset, 256):
     cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
     for i, image in enumerate(chunk):
@@ -156,12 +168,12 @@ for chunk in chunks(dataset, 256):
                 predicted.append(predict(features).encode('utf8'))
             image['predicted caption'] = predicted
             image['predicted label'] = CLASSES[np.argmax(features)]
-            print str(i) + ': Actual: ' + image['sentences'][0]['raw'].encode('utf8') + ' Predicted: ' + '; '.join(predicted)
+            print str(i) + ': Actual: ' + image['sentences'][0]['raw'].encode('utf8') + ' Predicted: ' + '; '.join(
+                predicted)
         except IOError:
             continue
 
-
-# Save the final product
+# Save the dictionary to a JSON file
 with open('/home/rcamachobarranco/datasets/caption_dataset/results_yelp_84_62.json', 'w') as outfile:
     # We use dump_dict to create the proper JSON structure
     dump_dict = dict()

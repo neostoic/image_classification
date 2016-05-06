@@ -1,7 +1,7 @@
 # coding: utf-8
 
-# # Image Captioning with LSTM
-# 
+# This script uses a CNN model to obtain the predicted label for all of the images in the dataset and creates a new
+# JSON file that contains the predicted label
 
 import cPickle as pickle
 import json
@@ -34,6 +34,7 @@ cnn_feature_layer = DenseLayer(cnn_layers['pool5/7x7_s1'],
 cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
                                      nonlinearity=softmax)
 
+# Define the function for label prediction.
 X_sym = T.tensor4()
 prediction = lasagne.layers.get_output(cnn_output_layer, X_sym)
 pred_fn = theano.function([X_sym], prediction)
@@ -42,15 +43,10 @@ pred_fn = theano.function([X_sym], prediction)
 with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
      model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 
-# model_param_values = \
-#    pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_85_32.pkl', mode='r'))
-# pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_85_32.pkl', mode='rb'))[
-#    'param values']
 
 lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
 
 # The images need some preprocessing before they can be fed to the CNN
-
 MEAN_VALUES = np.array([104, 117, 123]).reshape((3, 1, 1))
 
 
@@ -83,12 +79,13 @@ def prep_image(im):
 dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
 
 
-# Iterate over the dataset and add a field 'cnn features' to each item. This will take quite a while.
+# Iterate over the dataset and add a field 'cnn features' to each item.
 def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
 
+# Obtain the predicted label for each image and store it in a dictionary
 for chunk in chunks(dataset, 256):
     cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
     for i, image in enumerate(chunk):
@@ -100,10 +97,11 @@ for chunk in chunks(dataset, 256):
             continue
     labels = pred_fn(cnn_input)
     for i, image in enumerate(chunk):
+        # We use the argmax function to select the class with the highest probability, we could actually add top 2 or
+        # more and display the probability for each class.
         image['predicted_label'] = CLASSES[np.argmax(labels[i])]
 
-# Save the final product
-# Store the dataset
+# Store the dictionary with the results as a JSON file
 with open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset_labels.json', 'wb') as outfile:
     dump_dict = dict()
     dump_dict['images'] = dataset
