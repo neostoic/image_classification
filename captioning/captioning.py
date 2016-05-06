@@ -1,27 +1,42 @@
 import pickle
+import json
 
 import lasagne
 import numpy as np
 import skimage.transform
 import theano
 import theano.tensor as T
+import matplotlib.pyplot as plt
+from lasagne.layers import DenseLayer, NonlinearityLayer
+from lasagne.nonlinearities import softmax, linear
 from lasagne.utils import floatX
-
 from models import googlenet
+
+import logging
+
+CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
+
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 # Build the model and select layers we need - the features are taken from the final network layer, before the softmax nonlinearity.
 cnn_layers = googlenet.build_model()
+logging.info('GoogleNet model built')
 cnn_input_var = cnn_layers['input'].input_var
-cnn_feature_layer = cnn_layers['loss3/classifier']
-cnn_output_layer = cnn_layers['prob']
+cnn_feature_layer = DenseLayer(cnn_layers['pool5/7x7_s1'],
+                                     num_units=len(CLASSES),
+                                     nonlinearity=linear)
+cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
+                                nonlinearity=softmax)
 
 get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cnn_feature_layer))
 
 # Load the pretrained weights into the network
-model_param_values = \
-    pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet.pkl', mode='rb'))[
-        'param values']
+with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
+     model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
+logging.info('Read parameters from file')
+
 lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
+logging.info('All parameters are set') 
 
 # The images need some preprocessing before they can be fed to the CNN
 
@@ -56,10 +71,11 @@ def prep_image(im):
 SEQUENCE_LENGTH = 32
 MAX_SENTENCE_LENGTH = SEQUENCE_LENGTH - 3  # 1 for image, 1 for start token, 1 for end token
 BATCH_SIZE = 1
-CNN_FEATURE_SIZE = 1000
-EMBEDDING_SIZE = 256
+CNN_FEATURE_SIZE = 5
+EMBEDDING_SIZE = 512
 
-d = pickle.load(open(r'/home/rcamachobarranco/datasets/lstm_yelp_trained.pkl', mode='rb'))
+d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_yelp_trained.pkl', mode='rb'))
+# d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_coco_trained.pkl', mode='rb'))
 vocab = d['vocab']
 word_to_index = d['word_to_index']
 index_to_word = d['index_to_word']
@@ -124,6 +140,8 @@ def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
+# Load the caption data
+dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
 
 for chunk in chunks(dataset, 256):
     cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
@@ -131,13 +149,21 @@ for chunk in chunks(dataset, 256):
         fn = r'/home/rcamachobarranco/datasets/caption_dataset/{}/{}'.format(image['filepath'], image['filename'])
         try:
             im = plt.imread(fn)
-            cnn_input[i] = prep_image(im)
+            cnn_input = prep_image(im)
+            features = get_cnn_features(cnn_input)
+            predicted = []
+            for _ in range(5):
+                predicted.append(predict(features).encode('utf8'))
+            image['predicted caption'] = predicted
+            image['predicted label'] = CLASSES[np.argmax(features)]
+            print str(i) + ': Actual: ' + image['sentences'][0]['raw'].encode('utf8') + ' Predicted: ' + '; '.join(predicted)
         except IOError:
             continue
-    features = get_cnn_features(cnn_input)
-    for i, image in enumerate(chunk):
-        image['cnn features'] = predict(features[i]
+
 
 # Save the final product
-pickle.dump(dataset, open('/home/rcamachobarranco/datasets/caption_dataset/image_caption_with_cnn_features.pkl', 'w'),
-            protocol=pickle.HIGHEST_PROTOCOL)
+with open('/home/rcamachobarranco/datasets/caption_dataset/results_yelp_84_62.json', 'w') as outfile:
+    # We use dump_dict to create the proper JSON structure
+    dump_dict = dict()
+    dump_dict['images'] = dataset_images
+    json.dump(dump_dict, outfile)

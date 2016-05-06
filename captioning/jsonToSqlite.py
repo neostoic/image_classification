@@ -4,8 +4,8 @@ import sqlite3
 
 #JSON_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\yelp_caption_results.json"
 #DB_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\yelp_caption_results.db"
-JSON_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\coco_caption_results.json"
-DB_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\coco_caption_results.db"
+JSON_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.json"
+DB_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.db"
 
 dataset = json.load(open(JSON_FILE))
 conn = sqlite3.connect(DB_FILE)
@@ -19,6 +19,7 @@ c.execute('''create table images
     file_name text,
     split text,
     label text,
+    predicted_label text,
     caption text,
     predicted_caption_1 text,
     predicted_caption_2 text,
@@ -42,6 +43,8 @@ for row in dataset['images']:
     data.append(split)
     label = row['label']
     data.append(label)
+    predicted_label = row['predicted label']
+    data.append(predicted_label)
     caption = row['sentences'][0]['raw']
     data.append(caption)
     predicted_0 = row['predicted caption'][0]
@@ -55,7 +58,7 @@ for row in dataset['images']:
     predicted_4 = row['predicted caption'][4]
     data.append(predicted_4)
 
-    c.execute('insert into images values (?,?,?,?,?,?,?,?,?,?,?,?,?)', data)
+    c.execute('insert into images values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)', data)
 
 conn.commit()
 c.close()

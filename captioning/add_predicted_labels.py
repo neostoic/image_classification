@@ -5,22 +5,18 @@
 
 import cPickle as pickle
 import json
-import logging
 
 import lasagne
+import matplotlib.pyplot as plt
 import numpy as np
 import skimage.transform
 import theano
-
-import matplotlib.pyplot as plt
-
+import theano.tensor as T
 from lasagne.layers import DenseLayer, NonlinearityLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.utils import floatX
 
 from models import googlenet
-
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 # Setup to obtain predicted labels
 train_pkl = r'/home/rcamachobarranco/datasets/restaurant_photos_with_labels_train.pkl'
@@ -31,34 +27,27 @@ model_path = r'/home/rcamachobarranco/datasets/'
 
 # Build the model and select layers we need - the features are taken from the final network layer, before the softmax nonlinearity.
 cnn_layers = googlenet.build_model()
-logging.info('Built googlenet model')
-
 cnn_input_var = cnn_layers['input'].input_var
 cnn_feature_layer = DenseLayer(cnn_layers['pool5/7x7_s1'],
-                                     num_units=len(CLASSES),
-                                     nonlinearity=linear)
+                               num_units=len(CLASSES),
+                               nonlinearity=linear)
 cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
-                                nonlinearity=softmax)
+                                     nonlinearity=softmax)
 
-get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cnn_feature_layer))
-logging.info('Compiled new functions')
+X_sym = T.tensor4()
+prediction = lasagne.layers.get_output(cnn_output_layer, X_sym)
+pred_fn = theano.function([X_sym], prediction)
 
 # Load the pretrained weights into the network
-# model_param_values = \
-#    pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_model_84_92.pkl', mode='r'))
-
 with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
      model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
-logging.info('Read parameters from file')
 
-#model_param_values = \
-#    pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\googlenet_model_84_92.pkl', mode='rb'))
-
-
+# model_param_values = \
+#    pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_85_32.pkl', mode='r'))
 # pickle.load(open(r'/home/rcamachobarranco/datasets/googlenet_85_32.pkl', mode='rb'))[
 #    'param values']
+
 lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
-logging.info('All parameters are set') 
 
 # The images need some preprocessing before they can be fed to the CNN
 
@@ -92,7 +81,7 @@ def prep_image(im):
 
 # Load the caption data
 dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
-logging.info('JSON dataset loaded')
+
 
 # Iterate over the dataset and add a field 'cnn features' to each item. This will take quite a while.
 def chunks(l, n):
@@ -109,12 +98,13 @@ for chunk in chunks(dataset, 256):
             cnn_input[i] = prep_image(im)
         except IOError:
             continue
-    features = get_cnn_features(cnn_input)
+    labels = pred_fn(cnn_input)
     for i, image in enumerate(chunk):
-        image['cnn features'] = features[i]
-logging.info('Finished extracting features')
+        image['predicted_label'] = CLASSES[np.argmax(labels[i])]
 
 # Save the final product
-pickle.dump(dataset, open('/home/rcamachobarranco/datasets/caption_dataset/image_caption_with_cnn_features.pkl', 'w'),
-            protocol=pickle.HIGHEST_PROTOCOL)
-logging.info('Data pickled correctly, we are done!')
+# Store the dataset
+with open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset_labels.json', 'wb') as outfile:
+    dump_dict = dict()
+    dump_dict['images'] = dataset
+    json.dump(dump_dict, outfile)

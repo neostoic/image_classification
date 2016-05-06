@@ -40,6 +40,12 @@ with open("C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\coco_caption_res
     dump_dict['images'] = dataset_images
     json.dump(dump_dict, outfile)
 
+# Store the dataset
+with open("C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.json", "w") as outfile:
+    dump_dict = dict()
+    dump_dict['images'] = dataset
+    json.dump(dump_dict, outfile)
+
 # Open dataset
 with open(
         r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\caption_results\image_caption_with_predictions_yelp.pkl',

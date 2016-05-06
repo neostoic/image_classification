@@ -9,9 +9,9 @@ import theano.tensor as T
 import theano
 
 # Load the preprocessed dataset containing features extracted by GoogLeNet
-# dataset = pickle.load(open('/home/rcamachobarranco/datasets/image_captions_with_cnn_features.pkl'))
-dataset = pickle.load(
-    open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\image_caption_with_cnn_features.pkl', mode='rb'))
+dataset = pickle.load(open('/home/rcamachobarranco/datasets/caption_dataset/image_caption_with_cnn_features.pkl'))
+#dataset = pickle.load(
+#    open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\image_caption_with_cnn_features.pkl', mode='rb'))
 # Count words occuring at least 5 times and construct mapping int <-> word
 allwords = Counter()
 for item in dataset:
@@ -27,10 +27,10 @@ index_to_word = {i: w for i, w in enumerate(vocab)}
 
 print 'Size of vocabulary: ' + str(len(vocab))
 
-SEQUENCE_LENGTH = 28
+SEQUENCE_LENGTH = 32
 MAX_SENTENCE_LENGTH = SEQUENCE_LENGTH - 3  # 1 for image, 1 for start token, 1 for end token
 BATCH_SIZE = 100
-CNN_FEATURE_SIZE = 1000
+CNN_FEATURE_SIZE = 5
 EMBEDDING_SIZE = 512
 
 
@@ -52,7 +52,7 @@ def get_data_batch(dataset, size, split='train'):
 
 # Convert a list of tuples into arrays that can be fed into the network
 def prep_batch_for_network(batch):
-    x_cnn = floatX(np.zeros((len(batch), 1000)))
+    x_cnn = floatX(np.zeros((len(batch), CNN_FEATURE_SIZE)))
     x_sentence = np.zeros((len(batch), SEQUENCE_LENGTH - 1), dtype='int32')
     y_sentence = np.zeros((len(batch), SEQUENCE_LENGTH), dtype='int32')
     mask = np.zeros((len(batch), SEQUENCE_LENGTH), dtype='bool')
@@ -173,5 +173,5 @@ d = {'param values': param_values,
      'word_to_index': word_to_index,
      'index_to_word': index_to_word,
      }
-pickle.dump(d, open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\lstm_yelp_trained.pkl', 'wb'),
+pickle.dump(d, open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_yelp_trained.pkl', 'wb'),
             protocol=pickle.HIGHEST_PROTOCOL)

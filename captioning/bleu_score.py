@@ -1,26 +1,25 @@
-"""Compute the BLEU-n score for the captioning results
+# Compute the BLEU-n score for the captioning results
+#
+# Instead of averaging the sentence level BLEU scores (i.e. marco-average precision),
+# the original BLEU metric (Papineni et al. 2002) accounts for the micro-average precision
+# (i.e. summing the numerators and denominators for each hypothesis-reference(s) pairs before the division).
+#
+# Input:
+#     JSON file with predicted captions and actual caption
+#     n: the ngram order
+#
+# Output:
+#     BLEU-n score
+#
+# It would be good to obtain BLEU-4 score but the NLTK library appears to not have this option at a corpus level.
 
-Instead of averaging the sentence level BLEU scores (i.e. marco-average precision), 
-the original BLEU metric (Papineni et al. 2002) accounts for the micro-average precision 
-(i.e. summing the numerators and denominators for each hypothesis-reference(s) pairs before the division).
-
-Input:
-    JSON file with predicted captions and actual caption
-    n: the ngram order
-
-Output:
-    BLEU-n score
-
-It would be good to obtain BLEU-4 score but the NLTK library appears to not have this option at a corpus level.
-
-"""
 import json
 from nltk.translate.bleu_score import corpus_bleu
 from nltk.tokenize import TweetTokenizer
 
 # Inputs
 # input_file = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\caption_results\coco_caption_results.json'
-input_file = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\caption_results\yelp_caption_results.json'
+input_file = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_84_62.json'
 n = 4
 
 # Initialize tokenizer
