@@ -1,24 +1,29 @@
+# This script creates several data batches based on the number of folds selected. The last batch is always named test
+# Usage: python create_kfolds_pkl.py source folds
 import pandas as pd
 import os
 import sys
 import cPickle
 from sklearn.cross_validation import StratifiedKFold
 
-# python create_kfolds_pkl.py "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels.pkl" 6
+# Read python arguments
 if len(sys.argv) > 2:
     filename = sys.argv[1]
     folds = int(sys.argv[2])
     pkl_train_file = []
 
+    # Initialize the names for the pickles
     for i in range(1, folds):
         pkl_train_file.append(os.path.splitext(filename)[0] + '_train_batch' + str(i) + '.pkl')
     pkl_train_file.append(os.path.splitext(filename)[0] + '_test.pkl')
 
+    # Read the labels as categories and based on these categories obtain k-folds in such way the proportions are kept.
     df = pd.read_pickle(filename)
     df['label'] = df['label'].astype('category')
     df['label'] = df['label'].cat.codes.values
     skf = StratifiedKFold(df['label'], n_folds=folds)
 
+    # Pickle the training and testing data
     for i, (train, test) in enumerate(skf):
         df.loc[test, :].to_pickle(pkl_train_file[i])
 
@@ -35,6 +40,7 @@ if len(sys.argv) > 2:
     # for i, (train, test) in enumerate(skf.split(df['photo_id'], df['label'])):
     #     df.loc[test, :].to_pickle(pkl_train_file[i])
 
+# Same thing only hard coded
 else:
     filename = r'path\to\pickle\file.pkl'
     folds = 6

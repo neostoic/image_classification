@@ -2,6 +2,8 @@
 convnets/run/shm/*
 run/shm/*
 *desktop.ini
+captioning/convnet_keras*
+captioning/numpy-1.11.0*
 
 #ignore thumbnails created by windows
 Thumbs.db

@@ -1,3 +1,4 @@
+# This script pickles the images taking as input the size and number of batches that will be dataset will be splitted into
 import hickle as hkl
 import numpy as np
 import pandas as pd
@@ -21,12 +22,15 @@ batches = 24
 input_files = []
 output_files = []
 
+# Initialize the list of input pickles
 for k in range(1, batches):
     input_files.append(input_dir + 'train_batch' + str(k) + '.pkl')
 input_files.append(input_dir + 'test.pkl')
 
-
 def pickle_dataset(input_pkl, output_pkl, img_path, id_label, PIXELS):
+    """
+    This function takes the input pickle with text info and outputs a pickle with label and image only.
+    """
     data = pd.read_pickle(input_pkl)
     dataset = {}
 

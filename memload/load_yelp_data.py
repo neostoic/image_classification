@@ -1,3 +1,4 @@
+# This script loads the data from the image pickles and preprocesses it so that the Keras models can use it.
 import hickle as hkl
 import numpy as np
 
@@ -31,10 +32,16 @@ def _load_batch(path, pixels, dtype='float64', model='VGG_16'):
 
 
 def _grayscale(a, pixels):
+    """
+    Convert image to grayscale
+    """
     return a.reshape(a.shape[0], 3, pixels, pixels).mean(1).reshape(a.shape[0], -1)
 
 
 def _preprocess_vgg(batch, pixels):
+    """
+    Preprocess the data if it is for VGG-16 model
+    """
     rgb_mean = [123.68, 116.779, 103.939]
     img_size = pixels * pixels
     batch[:, 0:img_size] -= rgb_mean[0]
@@ -44,6 +51,9 @@ def _preprocess_vgg(batch, pixels):
 
 
 def _preprocess_googlenet(batch, pixels):
+    """
+        Preprocess the data if it is for googlenet model
+    """
     rgb_mean = np.asarray([123, 117, 104])
     img_size = pixels * pixels
     batch[:, 0:img_size] -= rgb_mean[0]
@@ -53,15 +63,24 @@ def _preprocess_googlenet(batch, pixels):
 
 
 def _preprocess_inception_v3(batch):
+    """
+        Preprocess the data if it is for inception-v3 model
+    """
     data = (batch - 128) / 128.
     return data
 
 
 def _preprocess_original(batch):
+    """
+        Preprocess the data if its for CIFAR10 model
+        """
     return batch / 255.0  # scale between [0, 1]
 
 
 def load_yelp_data(dtype='float64', grayscale=True, pixels=64, data_dir=r'D:\Yelp\datasets\\', batches=6, model='VGG_16'):
+    """
+    Loads the data and transforms it to numpy arrays divided by train and test data.
+    """
     input_files = []
 
     for k in range(1, batches):

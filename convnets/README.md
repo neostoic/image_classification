@@ -1,8 +1,7 @@
-##Batch Generator scripts
+##CNN scripts
 
-This folder contains all the scripts required for image batch generation which was required to be able to
-handle images of larger size (224 x 224 pixels). Scripts that do not have a usage defined are mostly helper scripts
-called from other scripts or have hard-coded parameters.
+Includes some of the implementations of Convolutional Neural Network (CNN) models. Scripts that do not have a usage
+defined are mostly helper scripts called from other scripts or have hard-coded parameters.
 
 ### Structure
 
