@@ -1,0 +1,9 @@
+body{
+    font:14px/1.4 arial;
+    color:gray;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}

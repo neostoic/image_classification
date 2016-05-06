@@ -1,0 +1,59 @@
+<html>
+<head>
+    {%include "menu.html"%}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/methodDetails.css' %}" />
+
+    <h1>Background</h1>
+    <div class="intro">
+       <br> The Yelp Dataset challenge invites participants to explore datasets
+        made available by Yelp in order to explore innovative ways to use this data,
+        in hopes of finding insight and correlations within the data that can help the
+        business model grow. The motivation for our project is to enrich the user experience by
+        (1) creating tags for photos based on contextual information, and (2) automatically enhancing a review with an image.
+
+        <br>In order to accomplish this, we will use the datasets made available by Yelp.
+        In particular, we will use the review text, and photo datasets. For the photo tagging,
+        we will use all of the photos uploaded for restaurants. Not all pictures provide enough
+        contextual information through the dataset, so we will first concentrate on using algorithms
+        to classify and create labels for our images. In this report, we focus on the classification
+        of images using Convolutional Neural Networks (CNNs) to predict the `label' field.
+
+        <br>For the automatic enhancement of reviews, we will reduce the data that we are using
+        for preliminary testing and training to a single restaurant only, specifically Mon Ami Gabi,
+        which is the restaurant that has the most reviews. The other step we have taken is implementing and
+        testing an entity extraction algorithm on the image captions and reviews. We will primarily work with noun phrases.
+
+        <br>There are several steps that are missing to complete our project: (1) create a Recursive Neural Network
+        (RNN) and a Convolutional Neural Network for captioning of the images; (2) test different algorithms to relate
+        image captions and reviews, such as Latent Dirichlet Analysis (LDA), Latent Semantic Analysis (LSA), and bag of
+        words; (3) create a web interface that shows our results. If time allows, we would also like to optimize the parameters
+        of the CNN label classifier.
+
+    </div>
+    <h1>Motivation</h1>
+    <p></p>
+    <h1>Image Classification</h1>
+    <p>
+        <table>
+            <tr>
+                <td> Model </td>
+                <td> Image size </td>
+                <td> Learning rate </td>
+                <td> Epochs </td>
+                <td> Testing Accuracy </td>
+            </tr>
+            <tr>
+                <td> GoogleNet </td>
+                <td> 224 x 224 </td>
+                <td> 0.001 </td>
+                <td> 2 (0.8 hours/1600 imgs) </td>
+                <td> 88.21% </td>
+            </tr>
+        </table>
+    </p>
+</head>
+<body>
+
+</body>
+</html>

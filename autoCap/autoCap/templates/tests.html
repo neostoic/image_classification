@@ -1,0 +1,52 @@
+<html>
+    {%include "menu.html"%}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/testsDetails.css' %}" />
+    <head>
+        <div class="exp">
+            <br> This are the results of our Image Classification (fig. 1.1)
+            <br> and image captioning with the MS Coco dataset at 27.7% accuracy
+        </div>
+    </head>
+
+    <body>
+        <div>
+            <table>
+                {% for imag in images %}
+                <tr tabindex="1" class = "imgWrap">
+                    <td class="image"><img src="/static/media/test/{{imag.file_name}}" alt="{{imag.file_name}}" /></td>
+
+                    <td class="imgCap">
+                        <div class = "imgDescription">
+                            <br>Original Caption:
+                            <li>{{imag.caption}}</li>
+                            <br>Predicted Text:
+                            <li>{{imag.predicted_caption_1}}</li>
+                            <li>{{imag.predicted_caption_2}}</li>
+                            <li>{{imag.predicted_caption_3}}</li>
+                            <li>{{imag.predicted_caption_4}}</li>
+                            <li>{{imag.predicted_caption_5}}</li>
+                            <br>Label:
+                            <li>{{imag.label}}</li>
+                            <br>Predicted Label:
+                            <li>{{imag.predicted_label}}</li>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if images.has_previous %}
+                <a href="?page={{ images.previous_page_number }}"> < </a>
+                {% endif %}
+
+                {% if images.has_next %}
+                <a href="?page={{ images.next_page_number }}"> > </a>
+                {% endif %}
+            </span>
+        </div>
+    </body>
+</html>
