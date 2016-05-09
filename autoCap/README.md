@@ -7,11 +7,11 @@ It is constructed with the Django framework, and deployed using Heroku.
 
 Also available in the requirements.txt file
 
-*dj-database-url==0.4.0
-*Django==1.9.2
-*gunicorn==19.4.5
-*psycopg2==2.6.1
-*whitenoise==2.0.6
+* dj-database-url==0.4.0
+* Django==1.9.2
+* gunicorn==19.4.5
+* psycopg2==2.6.1
+* whitenoise==2.0.6
 
 ## Home
 
