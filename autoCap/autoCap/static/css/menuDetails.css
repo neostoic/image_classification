@@ -6,7 +6,7 @@ ul {
     background-color: red;
 }
 
-li a{
+.navBar a{
     font: 20px/1.4 arial;
     float: left;
     display: block;
@@ -17,7 +17,7 @@ li a{
 }
 
 /* Change the link color to #111 (black) on hover */
-li a:hover {
+.navBar a:hover {
     background-color: white;
     color:red
 }

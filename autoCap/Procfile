@@ -1,0 +1,1 @@
+web: gunicorn autoCap.wsgi --log-file -

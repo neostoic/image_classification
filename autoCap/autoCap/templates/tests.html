@@ -1,12 +1,16 @@
+<!-- This html file displays our pictures
+  -- Along with the original captions and labels
+  -- And the predicted captions and label from our experiment
+  -- The Python code in the brackets takes all the
+  -- images from the queries written in the view file
+  -- Along with any other Python code-->
+
 <html>
     {%include "menu.html"%}
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/testsDetails.css' %}" />
     <head>
-        <div class="exp">
-            <br> This are the results of our Image Classification (fig. 1.1)
-            <br> and image captioning with the MS Coco dataset at 27.7% accuracy
-        </div>
+
     </head>
 
     <body>
@@ -14,7 +18,7 @@
             <table>
                 {% for imag in images %}
                 <tr tabindex="1" class = "imgWrap">
-                    <td class="image"><img src="/static/media/test/{{imag.file_name}}" alt="{{imag.file_name}}" /></td>
+                    <td class="image"><img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/{{imag.file_name}}" alt="{{imag.file_name}}" /></td>
 
                     <td class="imgCap">
                         <div class = "imgDescription">

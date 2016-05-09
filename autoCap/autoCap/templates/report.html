@@ -1,3 +1,5 @@
+<!-- This html displays our abstract and has download links to our documents -->
+
 <html>
 <head>
     {%include "menu.html"%}
@@ -6,54 +8,38 @@
 
     <h1>Background</h1>
     <div class="intro">
-       <br> The Yelp Dataset challenge invites participants to explore datasets
-        made available by Yelp in order to explore innovative ways to use this data,
-        in hopes of finding insight and correlations within the data that can help the
-        business model grow. The motivation for our project is to enrich the user experience by
-        (1) creating tags for photos based on contextual information, and (2) automatically enhancing a review with an image.
-
-        <br>In order to accomplish this, we will use the datasets made available by Yelp.
-        In particular, we will use the review text, and photo datasets. For the photo tagging,
-        we will use all of the photos uploaded for restaurants. Not all pictures provide enough
-        contextual information through the dataset, so we will first concentrate on using algorithms
-        to classify and create labels for our images. In this report, we focus on the classification
-        of images using Convolutional Neural Networks (CNNs) to predict the `label' field.
-
-        <br>For the automatic enhancement of reviews, we will reduce the data that we are using
-        for preliminary testing and training to a single restaurant only, specifically Mon Ami Gabi,
-        which is the restaurant that has the most reviews. The other step we have taken is implementing and
-        testing an entity extraction algorithm on the image captions and reviews. We will primarily work with noun phrases.
-
-        <br>There are several steps that are missing to complete our project: (1) create a Recursive Neural Network
-        (RNN) and a Convolutional Neural Network for captioning of the images; (2) test different algorithms to relate
-        image captions and reviews, such as Latent Dirichlet Analysis (LDA), Latent Semantic Analysis (LSA), and bag of
-        words; (3) create a web interface that shows our results. If time allows, we would also like to optimize the parameters
-        of the CNN label classifier.
+       <br> User experience is one of the pillars of human-computer interaction.
+        Successful websites improve the quality of the user's interaction with their
+        content in many different ways. The Yelp Dataset challenge invites participants
+        to explore the datasets made available by Yelp to find relevant insights that
+        could be useful to the users, to the business owners or to both. Most of the
+        Yelp reviews do not contain images that illustrate the message that the reviewer
+        is trying to convey. Thus, showing images to the user that are related to a review
+        could significantly enhance the user experience. In this work, we propose an
+        automated data-mining-based framework that enhances restaurant Yelp reviews by
+        suggesting images uploaded by other users which are relevant to a particular review.
+        The framework developed consists of three main components: 1) a Convolutional Neural
+        Network image classifier used to predict the label of each new image, 2) a Long
+        Short-Term Memory neural network that generates a caption for an image in case a
+        caption is not provided, and 3) a Latent Dirichlet Analysis, where we identify
+        the most probable topic per review and the top words that are present in the review
+        to map them to captions that are in the same topic and contain one or more of the
+        top words. The results show that our framework is severely affected by the low
+        quality of many captions and reviews, particularly with respect to the predicted
+        captions. However, a qualitative analysis of the predicted images shows promising
+        results. To perform the qualitative analysis we deployed a Django-based website that
+        shows the results for the first two steps of the framework.
 
     </div>
-    <h1>Motivation</h1>
-    <p></p>
-    <h1>Image Classification</h1>
-    <p>
-        <table>
-            <tr>
-                <td> Model </td>
-                <td> Image size </td>
-                <td> Learning rate </td>
-                <td> Epochs </td>
-                <td> Testing Accuracy </td>
-            </tr>
-            <tr>
-                <td> GoogleNet </td>
-                <td> 224 x 224 </td>
-                <td> 0.001 </td>
-                <td> 2 (0.8 hours/1600 imgs) </td>
-                <td> 88.21% </td>
-            </tr>
-        </table>
-    </p>
-</head>
-<body>
 
-</body>
+</head>
+    <h1>Documents</h1>
+
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/first_report.pdf">First Report</a></li>
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/FirstPresentationSlides.pptx">First Presentation</a></li>
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/second_report.pdf">Second Report</a></li>
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/2ndPresentationSlides.pdf">Second Presentation</a></li>
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/final_report.pdf">Final Report</a></li>
+        <li class="DocLink"><a href="https://s3-us-west-2.amazonaws.com/auto-ap-media/Final_Presentation.pdf">Final Presentation</a></li>
+
 </html>

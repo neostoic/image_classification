@@ -3,7 +3,16 @@ body{
     color:gray;
 }
 th, td {
-    padding: 8px;
-    text-align: left;
+    padding: 20px;
+    text-align: centered;
     border-bottom: 1px solid #ddd;
+}
+.DocLink a{
+    font:14px/1.4 arial;
+    text-decoration: none;
+    color: gray;
+}
+
+.DocLink a:hover{
+    color: red;
 }
