@@ -15,6 +15,7 @@ The structure follows a Heroku prebuilt Django template.
 0. `urls.py:` Contails url pattern configurations for website pages.
 0. `views.py:` Contains queries and handles site requests.
 0. `wsgi.py:` Needed for Heroku deployment.
+
 ##Website
 
 Site can be found at https://auto-aptioning.herokuapp.com
