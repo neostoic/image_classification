@@ -32,6 +32,7 @@ There are several libraries required for the framework to work:
 Our project has a Python package structure but each folder in this structure has a particular
 purpose:
 
+0. **autoCap:** This folder contains all the scripts that create our website and help with its deployment. 
 0. **batches:** This folder contains all the scripts required for image batch generation which was required to be able to handle images of larger size (224 x 224 pixels)
 0. **captioning:** This folder contains all of the scripts related to captioning, including some scripts that wre required to reformat the data so that it was compatible with the model.
 0. **convnets:** Includes some of the implementations of Convolutional Neural Network (CNN) models.
