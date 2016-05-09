@@ -25,6 +25,7 @@ There are several libraries required for the framework to work:
 * nolearn >= 0.6a0.dev0
 * pillow >= 3.1.1
 * textblob >= 0.11.1
+* hickle >= 2.0.4
 
 ##Structure
 
