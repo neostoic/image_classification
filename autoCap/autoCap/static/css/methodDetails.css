@@ -9,6 +9,7 @@ th, td {
 }
 .DocLink a{
     font:14px/1.4 arial;
+    font-weight: bold;
     text-decoration: none;
     color: gray;
 }

@@ -6,3 +6,14 @@ h1, p {
     padding: 8px;
     text-align: left;
 }
+
+.yLink{
+    font:14px/1.4 arial;
+    font-weight: bold;
+    text-decoration: none;
+    color: gray;
+}
+
+.yLink:hover{
+    color:red;
+}
