@@ -45,4 +45,4 @@ The structure follows a Heroku prebuilt Django template.
 
 ##Website
 
-Site can be found at https://auto-aptioning.herokuapp.com
+Site can be found at https://auto-captioning.herokuapp.com
