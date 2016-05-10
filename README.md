@@ -37,6 +37,7 @@ purpose:
 0. **captioning:** This folder contains all of the scripts related to captioning, including some scripts that wre required to reformat the data so that it was compatible with the model.
 0. **convnets:** Includes some of the implementations of Convolutional Neural Network (CNN) models.
 0. **data:** This folder includes temporary data as well as the table that maps categories to an integer.
+0. **LDAmodeling:** This folder includes the implementation of the LDA model along with some results.
 0. **memload:** Contains the scripts used for the images that can be loaded directly from memory (instead of batch processing), in particular images of 64 x 64 pixels.
 0. **models:** This folder contains scripts that define and initialize the structure of each of the models that were tested, including VGG-16, VGG-19 and GoogleNet. We also include the script for Inception_v3 but this model did not work.
 0. **other:** This folder contains scripts that were used for exploration of the different libraries available, but are not part of the framework. The code inside this folder is not documented.
