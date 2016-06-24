@@ -18,21 +18,36 @@
             <table>
                 {% for imag in images %}
                 <tr tabindex="1" class = "imgWrap">
-                    <td class="image"><img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/{{imag.file_name}}" alt="{{imag.file_name}}" /></td>
+                    <td class="image"><img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/{{imag.split}}/{{imag.file_name}}" alt="{{imag.file_name}}" /></td>
 
                     <td class="imgCap">
                         <div class = "imgDescription">
                             <br>Original Caption:
                             <li>{{imag.caption}}</li>
-                            <br>Predicted Text:
-                            <li>{{imag.predicted_caption_1}}</li>
-                            <li>{{imag.predicted_caption_2}}</li>
-                            <li>{{imag.predicted_caption_3}}</li>
-                            <li>{{imag.predicted_caption_4}}</li>
-                            <li>{{imag.predicted_caption_5}}</li>
-                            <br>Label:
+                            <br>Generated Caption:
+                            <table class = "captions">
+                                <td>
+                                    <li>{{imag.predicted_caption_1}}</li>
+                                    {% if imag.predicted_caption_1 != 'Menu' %}
+                                    <li>{{imag.predicted_caption_2}}</li>
+                                    <li>{{imag.predicted_caption_3}}</li>
+                                    <li>{{imag.predicted_caption_4}}</li>
+                                    <li>{{imag.predicted_caption_5}}</li>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <li>{{imag.caption_confidence_1}}</li>
+                                    {% if imag.predicted_caption_1 != 'Menu' %}
+                                    <li>{{imag.caption_confidence_2}}</li>
+                                    <li>{{imag.caption_confidence_3}}</li>
+                                    <li>{{imag.caption_confidence_4}}</li>
+                                    <li>{{imag.caption_confidence_5}}</li>
+                                    {% endif %}
+                                </td>
+                            </table>
+                            <br>Original Label:
                             <li>{{imag.label}}</li>
-                            <br>Predicted Label:
+                            <br>Generated Label:
                             <li>{{imag.predicted_label}}</li>
                         </div>
                     </td>
@@ -46,7 +61,9 @@
                 {% if images.has_previous %}
                 <a href="?page={{ images.previous_page_number }}"> < </a>
                 {% endif %}
-
+                <span>
+                    Page {{ images.number }} of {{ images.paginator.num_pages }}.
+                </span>
                 {% if images.has_next %}
                 <a href="?page={{ images.next_page_number }}"> > </a>
                 {% endif %}

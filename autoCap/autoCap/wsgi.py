@@ -1,4 +1,8 @@
 """
+    Copyright 2005-2016 Django Software Foundation and individual contributors.
+    Django is a registered trademark of the Django Software Foundation.
+
+
 WSGI config for autoCap project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.

@@ -1,0 +1,41 @@
+<html>
+    {%include "menu.html"%}
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reviewDetail.css' %}" />
+    <head>
+
+    </head>
+    <body>
+    <table class="center">
+    {% for rev in reviews %}
+        <tr tabindex="1" class = "reviewWrap">
+                <td>{{rev.review_text}}</td>
+                <td>{{rev.top_words}}</td>
+        </tr>
+         <tr class="pics">
+             <td>
+             <img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/monAmi/{{rev.suggested_image1}}.jpg"/>
+             <img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/monAmi/{{rev.suggested_image2}}.jpg"/>
+             <img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/monAmi/{{rev.suggested_image3}}.jpg"/>
+             <img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/monAmi/{{rev.suggested_image4}}.jpg"/>
+             <img src="https://s3-us-west-2.amazonaws.com/auto-ap-media/media/monAmi/{{rev.suggested_image5}}.jpg"/>
+         </td>
+         </tr>
+    {% endfor %}
+    </table>
+    <div class="pagination">
+            <span class="step-links">
+                {% if reviews.has_previous %}
+                <a href="?page={{ reviews.previous_page_number }}"> < </a>
+                {% endif %}
+                <span>
+                    Review {{ reviews.number }} of {{ reviews.paginator.num_pages }}
+                </span>
+                {% if reviews.has_next %}
+                <a href="?page={{ reviews.next_page_number }}"> > </a>
+                {% endif %}
+            </span>
+        </div>
+
+    </body>
+</html>

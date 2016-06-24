@@ -1,5 +1,6 @@
 """
-Django settings for autoCap project on Heroku. Fore more info, see:
+
+Premade Django settings for autoCap project on Heroku. Fore more info, see:
 https://github.com/heroku/heroku-django-template
 
 For more information on this file, see
@@ -7,8 +8,10 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
-"""
 
+This file creates necessary setting for the Django application
+
+"""
 import os
 #import dj_database_url
 
@@ -77,8 +80,13 @@ WSGI_APPLICATION = 'autoCap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'results_84_62.db'),
-    }
+        'NAME': os.path.join(BASE_DIR, 'results_yelp_webpage.db'),
+    },
+    'reviews': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'suggestions_monamigabi_2.db'),
+    },
+
 }
 
 AUTH_PASSWORD_VALIDATORS = (
