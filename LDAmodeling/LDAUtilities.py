@@ -1,3 +1,6 @@
+# Utilities for LDA modeling
+# Adapted from Radim Rehurek's tutorial on Topics and transformations with Gensim, available at:
+# https://radimrehurek.com/gensim/tut2.html
 from __future__ import print_function
 import pickle
 import pandas as pd

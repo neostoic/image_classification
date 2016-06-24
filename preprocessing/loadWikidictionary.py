@@ -1,4 +1,7 @@
 # Script that creates a corpus from the Wikipedia data
+# Taken from Radim Rehurek's tutorial for topic modeling with Gensim
+# Available at:
+# http://radimrehurek.com/topic_modeling_tutorial/2%20-%20Topic%20Modeling.html
 import logging
 import itertools
 import sys

@@ -1,0 +1,4 @@
+python "C:\Users\crobe\Google Drive\DataMiningGroup\Code\json_to_pickle.py" "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels.json"
+python "C:\Users\crobe\Google Drive\DataMiningGroup\Code\json_to_pickle.py" "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_captions.json"
+python "C:\Users\crobe\Google Drive\DataMiningGroup\Code\create_test_training_pkl.py" "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels.pkl" 0.2
+python "C:\Users\crobe\Google Drive\DataMiningGroup\Code\create_test_training_pkl.py" "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_captions.pkl" 0.2

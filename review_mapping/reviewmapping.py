@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 # This script takes as input the JSON file with the predicted labels/captions and stores the records in a sqlite db
+# Adapted from Radim Rehurek's tutorial on Topics and transformations with Gensim, available at:
+# https://radimrehurek.com/gensim/tut2.html
 import json
 import logging
 import pickle

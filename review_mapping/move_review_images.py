@@ -31,10 +31,6 @@ reviews_suggestions = r"mon_ami_gabi_reviews_suggestions_2.json"
 
 dataset = json.load(open(reviews_suggestions, mode='r'))
 
-# {"review_id": "UpKdXO3jEElnqtsWjYxQ2w", "weight": 0.10000000000000002,
-#  "text": "Excellent food, great atmosphere, a bit noisy.  $$", "business_id": "4bEjOyTaDG24SY5TxsaUNQ", "top_words": [],
-#  "topic": 0, "suggested_images": []}
-
 for idx in range(10):
     if dataset[idx]['suggested_images']:
         output_dir = target_dir + "{}/".format(dataset[idx]['review_id'])

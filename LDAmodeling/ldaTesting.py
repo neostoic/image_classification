@@ -1,3 +1,7 @@
+# LDA topic modeling testing
+#  Taken from Radim Rehurek's tutorial for topic modeling with Gensim
+# Available at:
+# http://radimrehurek.com/topic_modeling_tutorial/2%20-%20Topic%20Modeling.html
 from __future__ import print_function
 import pickle
 import gensim

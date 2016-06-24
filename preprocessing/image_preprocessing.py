@@ -2,6 +2,8 @@
 # coding: utf-8
 
 # Image preprocessing script
+# Based on code from Eben Nolson's Neural networks with Theano and Lasagne tutorial, available at:
+# https://github.com/ebenolson/pydata2015/blob/master/3%20-%20Convolutional%20Networks/Finetuning%20for%20Image%20Classification.ipynb
 
 import numpy as np
 
