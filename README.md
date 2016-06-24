@@ -44,7 +44,6 @@ purpose:
 0. **preprocessing:** Includes code to preprocess the images and the reviews.
 0. **review_mapping:** Includes the code that maps a review to an image.
 0. `__init__.py`: This file is empty and it is only included as a requirement for all packages.
-0. `convnet.py`: This is the main script for the image classification algorithm.
 0. `keras.sh` and `lasagne.sh`: Auxiliary scripts that are used for job scheduling in a SLURM based cluster.
 
 ##Documentation

@@ -1,4 +1,6 @@
 # Train two simple deep CNN on the Yelp small images (64 x 64 pixels) dataset in Griffin cluster.
+# Based on the Keras examples by Francois Chollet, available at:
+# https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
 # GPU Usage: `THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_griffin.py`
 from __future__ import print_function
 

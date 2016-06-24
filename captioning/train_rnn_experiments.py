@@ -1,8 +1,10 @@
 # Experiments to optimize the hyperparameters for the NIC caption generator.
 # This is a partial implementation of "Show and Tell: A Neural Image Caption Generator"
-# (http://arxiv.org/abs/1411.4555), borrowing heavily from Andrej Karpathy's NeuralTalk (https://github.com/karpathy/neuraltalk)
+# (http://arxiv.org/abs/1411.4555),
+# borrowing heavily from Andrej Karpathy's NeuralTalk (https://github.com/karpathy/neuraltalk)
 # And adapted from the Neural networks with Theano and Lasagne tutorial from Eben Nolson
-# available at: https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20RNN%20Training.ipynb
+# available at:
+# https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20RNN%20Training.ipynb
 
 import cPickle as pickle
 import logging

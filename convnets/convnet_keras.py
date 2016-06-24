@@ -1,4 +1,6 @@
-# Train two simple deep CNN on the Yelp small images (64 x 64 pixels) dataset.
+# Train several deep CNN models on the Yelp data using batch processing in Griffin cluster.
+# Based on the Keras examples by Francois Chollet, available at:
+# https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
 
 # GPU run command:
 #    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_keras.py
@@ -15,7 +17,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 from memload.load_yelp_data import load_yelp_data
 
-MODELS = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
+MODELS = ['CIFAR_10', 'VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
 
 def train():
@@ -26,9 +28,9 @@ def train():
     model_ = 'VGG_16'
 
     # input image dimensions
-    if model_ in MODELS[0:2]:
-        img_rows, img_cols = 224, 224
-    if model_ in MODELS[3]:
+    if model_ in MODELS[0:3]:
+        img_rows, img_cols = 64, 64
+    if model_ in MODELS[4]:
         img_rows, img_cols = 299, 299
     # the Yelp images are RGB
     img_channels = 3
@@ -41,8 +43,10 @@ def train():
     print(X_test.shape[0], 'test samples')
 
     # generate model
-    model = VGG_16(img_rows, img_cols, img_channels, nb_classes)
-
+    if model_ in ['VGG_16']:
+        model = VGG_16(img_rows, img_cols, img_channels, nb_classes)
+    elif model in ['CIFAR_10']:
+        model = CIFAR_10(img_rows, img_cols, img_channels, nb_classes)
     # let's train the model using SGD + momentum
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd)

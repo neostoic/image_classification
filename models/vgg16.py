@@ -2,6 +2,8 @@
 # "Very Deep Convolutional Networks for Large-Scale Image Recognition"
 # Original source: https://gist.github.com/ksimonyan/211839e770f7b538e2d8
 # License: non-commercial use only
+# Taken from the Lasagne model zoo, available at:
+# https://github.com/Lasagne/Recipes/tree/master/modelzoo
 
 # Download pretrained weights from:
 # https://s3.amazonaws.com/lasagne/recipes/pretrained/imagenet/vgg16.pkl

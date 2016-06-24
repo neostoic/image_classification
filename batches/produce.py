@@ -1,7 +1,8 @@
 # Script that creates small batches of numpy by calling the batch function from load_batch.py. In this case batch_fn is
 # passed as a string, thus it is not apparent that the batch function is being called
 #
-# This code was adapted from a gist from Eben Nolson, available at: https://gist.github.com/ebenolson/072712792c46aa192797
+# This code was adapted from a gist from Eben Nolson,
+# available at: https://gist.github.com/ebenolson/072712792c46aa192797
 
 import hashlib
 

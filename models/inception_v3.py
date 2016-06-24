@@ -4,6 +4,8 @@
 # Original source:
 # https://github.com/tensorflow/tensorflow/blob/master/tensorflow/models/image/imagenet/classify_image.py
 # License: http://www.apache.org/licenses/LICENSE-2.0
+# Taken from the Lasagne model zoo, available at:
+# https://github.com/Lasagne/Recipes/tree/master/modelzoo
 
 # Download pretrained weights from:
 # https://s3.amazonaws.com/lasagne/recipes/pretrained/imagenet/inception_v3.pkl

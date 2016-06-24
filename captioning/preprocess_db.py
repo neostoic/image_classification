@@ -1,4 +1,5 @@
-# This script changes the JSON format so that it is compatible with the captioning algorithm, changing it to a dictionary.
+# This script changes the JSON format so that it is compatible with the captioning algorithm,
+# changing it to a dictionary.
 # The format is very similar to the one used by MS COCO dataset. It also tokenizes each caption and splits the images
 # based on which dataset they belong to: train/test/validation
 import json

@@ -1,4 +1,5 @@
-# This script pickles the images taking as input the size and number of batches that will be dataset will be splitted into
+# This script pickles the images taking as input the size and number of batches that will be dataset will
+# be splitted into
 import hickle as hkl
 import numpy as np
 import pandas as pd
