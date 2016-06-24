@@ -1,4 +1,6 @@
-# Train two simple deep CNN on the Yelp using batch processing in Griffin cluster.
+# Train several deep CNN models on the Yelp data using batch processing in Griffin cluster.
+# Based on code from Eben Nolson's Neural networks with Theano and Lasagne tutorial, available at:
+# https://github.com/ebenolson/pydata2015/blob/master/3%20-%20Convolutional%20Networks/Finetuning%20for%20Image%20Classification.ipynb
 # GPU Usage: `THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_pretrained.py`
 
 from __future__ import print_function
