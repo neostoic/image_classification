@@ -1,0 +1,31 @@
+.exp{
+    font:15px/1.4 arial;
+    color: #696969;
+    margin: 10px;
+}
+
+.step-links{
+    display:block;
+    text-align: center;
+    font:30px/1.4 arial;
+    color: white;
+    background-color: red;
+}
+
+.step-links a{
+    font:60px/1.4 arial;
+    color: white;
+    text-decoration: none;
+}
+
+body {text-align:center;}
+
+table.center {
+    width:80%;
+    margin-left:10%;
+    margin-right:10%;
+  }
+img{
+    width:100px;
+    height:auto;
+}

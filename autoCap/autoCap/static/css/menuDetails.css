@@ -1,9 +1,22 @@
+@font-face {
+    font-family: "LeagueGothic";
+    src: url("../LeagueGothic-Regular.otf");
+}
+
 ul {
     list-style-type: none;
     margin: 0;
-    padding: 1;
+    padding: 0;
     overflow: hidden;
     background-color: red;
+}
+
+.pageTitle{
+    font: 80px/1.4 LeagueGothic;
+    color: red;
+    text-align: center;
+    padding: 0;
+    margin:0;
 }
 
 .navBar a{
@@ -12,11 +25,10 @@ ul {
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 16px;
     text-decoration: none;
 }
 
-/* Change the link color to #111 (black) on hover */
 .navBar a:hover {
     background-color: white;
     color:red
