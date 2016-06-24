@@ -19,7 +19,7 @@ from lasagne.layers import Conv2DLayer as ConvLayer
 from lasagne.layers import Pool2DLayer as PoolLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.utils import floatX
-from multiprocessing import freeze_support
+
 
 from batches.batchgen import BatchGen
 from batches.load_batch import batch
@@ -62,19 +62,12 @@ def train(model_='VGG_16'):
     nb_epoch = 50
     data_augmentation = False
 
-    # Change paths based on where we are testing
-    if os.name in ['nt']:
-        train_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_train.pkl'
-        test_pkl = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_test.pkl'
-        img_path = r'D:\Yelp\restaurant_photos\\'
-        CLASSES = pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Code\data\categories.pkl', 'rb'))
-        model_path = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\\'
-    else:
-        train_pkl = r'/home/rcamachobarranco/datasets/restaurant_photos_with_labels_train.pkl'
-        test_pkl = r'/home/rcamachobarranco/datasets/restaurant_photos_with_labels_test.pkl'
-        img_path = r'/home/rcamachobarranco/datasets/restaurant_photos/'
-        CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
-        model_path = r'/home/rcamachobarranco/datasets/'
+    # Initialize paths relative to our folder
+    train_pkl = r'../data/restaurant_photos_with_labels_train.pkl'
+    test_pkl = r'../data/restaurant_photos_with_labels_test.pkl'
+    img_path = r'../data/restaurant_photos/'
+    CLASSES = pickle.load(open(r'../data/categories.pkl', 'rb'))
+    model_path = r'../data/models/'
 
     # input image dimensions
     if model_ in MODELS[0:3]:
@@ -173,11 +166,7 @@ def train(model_='VGG_16'):
 
                     # Store the model if accuracy is above 86%
                     if acc_tot > 0.86:
-                        np.savez('/home/rcamachobarranco/datasets/googlenet_{0:.4g}.npz'.format(acc_tot * 100), *lasagne.layers.get_all_param_values(output_layer))
+                        np.savez(r'../data/googlenet_model.npz', *lasagne.layers.get_all_param_values(output_layer))
 
                     logging.info('Epoch {0} Train_loss {1} Test_loss {2} Test_accuracy {3}'.format(epoch, train_loss, loss_tot, acc_tot * 100))
-    
 
-if __name__ == '__main__':
-    freeze_support()
-    train('googlenet')

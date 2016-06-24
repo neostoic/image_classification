@@ -24,6 +24,6 @@ class Produce:
                             pixels=pixels, model=model, batch_size=batch_size)
 
             # Pickle the current batch as compressed npz file
-            np.savez_compressed('./run/shm/{}-{}'.format(id, n), x=x, y=y.astype('int32'))
+            np.savez_compressed('../run/shm/{}-{}'.format(id, n), x=x, y=y.astype('int32'))
             # Add to the queue
             doneq.put(n)

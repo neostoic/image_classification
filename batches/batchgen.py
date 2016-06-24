@@ -22,7 +22,7 @@ import produce
 
 # BatchGen object generates an iterator for the restaurant photos
 class BatchGen:
-    def __init__(self, batch_fn, seed=None, num_workers=8, input_pkl='restaurant_photos_with_labels_train.pkl',
+    def __init__(self, batch_fn, seed=None, num_workers=8, input_pkl='../data/restaurant_photos_with_labels_train.pkl',
                  img_path='.', dtype='float64', grayscale=False, pixels=64, model='VGG_16', batch_size=32):
         self.batch_fn = batch_fn
         self.batch_size = batch_size
@@ -70,7 +70,7 @@ class BatchGen:
             self.finished_batches.append(i)
 
         # Load numpy pickle with images/data
-        fn = './run/shm/{}-{}.npz'.format(self.id, n)
+        fn = '../run/shm/{}-{}.npz'.format(self.id, n)
         batch = np.load(fn, mmap_mode='r')
         # Remove temp file using appropriate call
         if os.name not in ['nt']:

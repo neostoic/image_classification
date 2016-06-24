@@ -9,11 +9,8 @@ import sys
 import pandas as pd
 from sklearn.cross_validation import StratifiedKFold
 
-if len(sys.argv) > 2:
-    # Read system arguments
-    filename = sys.argv[1]
-    folds = int(sys.argv[2])
 
+def create_train_test_data(filename, folds=6):
     # Output will be named as the input filename but appending _train.pkl or _test.pkl at the end.
     train_fn = os.path.splitext(filename)[0] + '_train.pkl'
     test_fn = os.path.splitext(filename)[0] + '_test.pkl'
