@@ -1,5 +1,5 @@
 # Helper script to load batches of data for image classification using the BatchGen class
-
+# Adapted from the Theano tutorial from Sander Dieleman, available at: https://github.com/benanne/theano-tutorial/blob/master/load.py
 import numpy as np
 import pandas as pd
 from PIL import Image

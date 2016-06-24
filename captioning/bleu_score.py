@@ -1,6 +1,6 @@
-#
-#
-# Instead of averaging the sentence level BLEU scores (i.e. marco-average precision),
+# Compute the BLEU-n score for our corpus
+# Based on the corpus-level BLEU function from: http://www.nltk.org/_modules/nltk/translate/bleu_score.html
+# Instead of averaging the sentence level BLEU scores (i.e. macro-average precision),
 # the original BLEU metric (Papineni et al. 2002) accounts for the micro-average precision
 # (i.e. summing the numerators and denominators for each hypothesis-reference(s) pairs before the division).
 #
@@ -11,12 +11,12 @@
 # Output:
 #     BLEU-n score
 #
-# It would be good to obtain BLEU-4 score but the NLTK library appears to not have this option at a corpus level.
+
 
 import json
-import numpy as np
-from nltk.translate.bleu_score import corpus_bleu
+
 from nltk.tokenize import TweetTokenizer
+from nltk.translate.bleu_score import corpus_bleu
 
 
 def compute_bleu(batch_in, predicted):
@@ -43,8 +43,6 @@ def compute_bleu(batch_in, predicted):
     return score
 
 # Inputs
-# input_file = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\caption_results\coco_caption_results.json'
-#input_file = r'D:\Yelp\caption_dataset\results_yelp_webpage.json'
 input_file = r'results_yelp_webpage.json'
 #n = 1
 

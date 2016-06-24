@@ -2,6 +2,8 @@
 
 # This script uses a CNN model to obtain image features for all of the images in the dataset which will be used by the
 # captioning algorithm
+# Adapted from the Neural networks with Theano and Lasagne tutorial from Eben Nolson
+# available at: https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20Preprocessing.ipynb
 
 import cPickle as pickle
 import json

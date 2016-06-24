@@ -1,11 +1,9 @@
 # -*- coding:utf-8 -*-
 # This script takes as input the JSON file with the predicted labels/captions and stores the records in a sqlite db
+# Adapted from a gist from Nobuya Oshiro, taken from: https://gist.github.com/atsuya046/7957165
 import json
 import sqlite3
 
-#JSON_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\yelp_caption_results.json"
-#DB_FILE = "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\yelp_caption_results.db"
-#JSON_FILE = r"D:\Yelp\caption_dataset\results_yelp_webpage.json"
 JSON_FILE = r"results_yelp_webpage.json"
 DB_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_yelp_webpage.db"
 
@@ -13,12 +11,6 @@ DB_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\results_yelp_we
 dataset = json.load(open(JSON_FILE))
 conn = sqlite3.connect(DB_FILE)
 
-# Suggested images
-# business_id
-# review_id
-# review_text
-# suggested_image1 ... suggested_image5
-# y review_top_words
 # Connect to DB
 c = conn.cursor()
 # Create table

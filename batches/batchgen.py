@@ -1,4 +1,5 @@
 # Context manager to generate batches in the background via a process pool
+# This code was adapted from a gist from Eben Nolson, available at: https://gist.github.com/ebenolson/072712792c46aa192797
 # Usage:
 #
 # def batch(seed):

@@ -1,5 +1,8 @@
 # Script to pickle json data automatically
 # Should only work with tables created with Apache drill since they have a different format
+# This code was adapted from a post from user 'tback' on  to the
+# stackoverflow forum here:  http://stackoverflow.com/a/8730674
+#
 # Usage:
 # 
 # python path\to\json_to_pickle.py path\to\json_file.json

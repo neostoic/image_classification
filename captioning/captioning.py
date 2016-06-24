@@ -1,5 +1,9 @@
 # This script uses the CNN model and the LSTM model trained previously to obtain the predicted captions for all of the
 # images in the dataset and creates a new JSON file that contains the predicted captions
+#  This is a partial implementation of "Show and Tell: A Neural Image Caption Generator"
+# (http://arxiv.org/abs/1411.4555), borrowing heavily from Andrej Karpathy's NeuralTalk (https://github.com/karpathy/neuraltalk)
+# And adapted from the Neural networks with Theano and Lasagne tutorial from Eben Nolson
+# available at: https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20Caption%20Generation.ipynb
 
 import json
 import logging

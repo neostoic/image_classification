@@ -1,13 +1,19 @@
+# Train an LSTM network to predict image captions
+# This is a partial implementation of "Show and Tell: A Neural Image Caption Generator"
+# (http://arxiv.org/abs/1411.4555), borrowing heavily from Andrej Karpathy's NeuralTalk (https://github.com/karpathy/neuraltalk)
+# And adapted from the Neural networks with Theano and Lasagne tutorial from Eben Nolson
+# available at: https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20RNN%20Training.ipynb
+
 import cPickle as pickle
+import logging
 import random
 from collections import Counter
 
 import lasagne
 import numpy as np
-from lasagne.utils import floatX
-import theano.tensor as T
 import theano
-import logging
+import theano.tensor as T
+from lasagne.utils import floatX
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
