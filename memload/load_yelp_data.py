@@ -1,4 +1,6 @@
 # This script loads the data from the image pickles and preprocesses it so that the Keras models can use it.
+# Adapted from the Theano tutorial from Sander Dieleman,
+# available at: https://github.com/benanne/theano-tutorial/blob/master/load.py
 import hickle as hkl
 import numpy as np
 

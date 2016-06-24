@@ -21,5 +21,7 @@ it to a dictionary. The format is very similar to the one used by MS COCO datase
 splits the images based on which dataset they belong to: train/test/validation.
 * `preprocess_images_caption.py`: This script uses a CNN model to obtain image features for all of the images in the
 Yelp dataset which will be used by the captioning algorithm.
+* `test_confidence.py`: This script is the same as captioning.py but we include evaluation of validation set every few epochs.
 * `train_rnn.py`: This script creates and trains the LSTM model used for captioning. It takes as input the CNN features
 and the captions.
+* `train_rnn_experiments.py`: Same as above but with hyperparameter lists to optimize them.

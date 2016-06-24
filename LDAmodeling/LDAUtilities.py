@@ -156,22 +156,23 @@ lda_model.print_topics(20);
 logging.info('Assigning id2word')
 id2word=lda_model.id2word;
 
-#reviews=iter_rev('./data/MonAmiGabiTesting.pkl');
-#print(review for review in reviews);
-#review=reviews[1];
-#getTopTopic(review)
-#print("LDA review results:")
-#print(reviews)
+# reviews=iter_rev('./data/MonAmiGabiTesting.pkl');
+# print(review for review in reviews);
+# review=reviews[1];
+# getTopTopic(review)
+# print("LDA review results:")
+# print(reviews)
 
-#logging.info('Evaluating LDA reviews')
-# rev_stream = (tokens for tokens in  iter_rev('./data/MonAmiGabiTesting.pkl'));  # generator
-# test_reviews = list(itertools.islice(rev_stream,1,5000));
-#intra_inter(lda_model, test_reviews)
-#logging.info('Evaluating LDA captions')
-# caption_stream = (tokens for tokens in  iter_rev('./data/MonAmiGabiCapsTesting.pkl'));  # generator
-# test_captions = list(itertools.islice(caption_stream,5000));
-# #intra_inter(lda_model, test_captions)
-# totalRevs=len(reviews);
+logging.info('Evaluating LDA reviews')
+rev_stream = (tokens for tokens in iter_rev('./data/MonAmiGabiTesting.pkl'));  # generator
+test_reviews = list(itertools.islice(rev_stream,1,5000));
+intra_inter(lda_model, test_reviews)
+logging.info('Evaluating LDA captions')
+caption_stream = (tokens for tokens in iter_rev('./data/MonAmiGabiCapsTesting.pkl'));  # generator
+test_captions = list(itertools.islice(caption_stream,5000));
+#intra_inter(lda_model, test_captions)
+totalRevs=len(reviews);
+print(totalRevs)
 
 #caption=captions[1];
 #getTopTopic(caption)

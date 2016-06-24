@@ -1,5 +1,11 @@
 # This script uses the CNN model and the LSTM model trained previously to obtain the predicted captions for all of the
 # images in the dataset and creates a new JSON file that contains the predicted captions
+#  This is a partial implementation of "Show and Tell: A Neural Image Caption Generator"
+# (http://arxiv.org/abs/1411.4555),
+# borrowing heavily from Andrej Karpathy's NeuralTalk (https://github.com/karpathy/neuraltalk)
+# And adapted from the Neural networks with Theano and Lasagne tutorial from Eben Nolson
+# available at:
+# https://github.com/ebenolson/pydata2015/blob/master/4%20-%20Recurrent%20Networks/COCO%20Caption%20Generation.ipynb
 
 import json
 import logging
@@ -18,7 +24,8 @@ from lasagne.utils import floatX
 from models import googlenet
 
 # Read the dictionary with the classes
-CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
+#CLASSES = pickle.load(open(r'/home/rcamachobarranco/code/data/categories.pkl', 'rb'))
+CLASSES = pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Code/data/categories.pkl', 'rb'))
 
 # Initialize logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -37,7 +44,8 @@ cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
 get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cnn_feature_layer))
 
 # Load the pretrained weights into the network
-with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
+#with np.load('/home/rcamachobarranco/datasets/googlenet_model_87_71.npz') as f:
+with np.load(r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\caption_results/googlenet_model_87_71.npz') as f:
     model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 logging.info('Read parameters from file')
 
@@ -74,13 +82,13 @@ def prep_image(im):
 
 
 # Initialize parameters from RNN
-SEQUENCE_LENGTH = 32
+SEQUENCE_LENGTH = 11
 MAX_SENTENCE_LENGTH = SEQUENCE_LENGTH - 3  # 1 for image, 1 for start token, 1 for end token
 BATCH_SIZE = 1
 CNN_FEATURE_SIZE = 5
-EMBEDDING_SIZE = 512
+EMBEDDING_SIZE = 1024
 
-d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_yelp_trained.pkl', mode='rb'))
+d = pickle.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Code\captioning/lstm_yelp_trained_9_75_1024_0.001_webpage.pkl', mode='rb'))
 # d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_coco_trained.pkl', mode='rb'))
 vocab = d['vocab']
 word_to_index = d['word_to_index']
@@ -126,56 +134,162 @@ output = lasagne.layers.get_output(l_out, {
 f = theano.function([x_cnn_sym, x_sentence_sym], output)
 
 
-# Define the function used to predict a caption using #START# and #END# as markers.
-def predict(x_cnn):
-    x_sentence = np.zeros((BATCH_SIZE, SEQUENCE_LENGTH - 1), dtype='int32')
-    words = []
-    i = 0
-    while True:
-        i += 1
-        p0 = f(x_cnn, x_sentence)
-        pa = p0.argmax(-1)
-        tok = pa[0][i]
-        word = index_to_word[tok]
-        if word == '#END#' or i >= SEQUENCE_LENGTH - 1:
-            return ' '.join(words)
-        else:
-            x_sentence[0][i] = tok
-            if word != '#START#':
-                words.append(word)
-
-
 # Iterate over the dataset and add a field 'cnn features' to each item. This will take quite a while.
 def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
 
+# Function to compute non-linearity score.
+def compute_non_uniformity(orig_distr):
+    n = len(orig_distr)
+    n_inv = 1.0 / n
+    sum_distr = np.sum(orig_distr)
+    norm_distr = orig_distr / sum_distr
+
+    unif_distr = []
+    for i in range(n):
+        unif_distr.append(n_inv)
+    unif_distr = np.array(unif_distr)
+
+    num = np.sum(np.abs(norm_distr - unif_distr))
+    non_uniformity = num / (2.0 - (2.0 / n))
+
+    return non_uniformity
+
+
+def compute_confidence(probabilities, non_uniformity_scores):
+    m = len(probabilities)
+    probabilities = np.array(probabilities)
+    non_uniformity_scores = np.array(non_uniformity_scores)
+
+    confidence = (np.sum(np.exp(probabilities * non_uniformity_scores)) - m) / (m * np.exp(1) - m)
+
+    return confidence
+
+
+# Define the function used to predict a caption using #START# and #END# as markers.
+def predict(x_cnn):
+    x_sentence = np.zeros((BATCH_SIZE, SEQUENCE_LENGTH - 1), dtype='int32')
+    words = []
+    non_uniformity_scores = []
+    probabilities = []
+    i = 0
+    while True:
+        i += 1
+        p0 = f(x_cnn, x_sentence)
+        arr = p0[0][i]
+
+        # Obtain the word with maximum probability
+        pa = p0.argmax(-1)
+        tok = pa[0][i]
+        word = index_to_word[tok]
+        # Store the probability to use with confidence computation
+        probabilities.append(arr[tok])
+
+        # Define number of top probabilities per position used to compute confidence
+        n = 3
+        # Obtain the indices of the n most-probable terms for position i
+        top_n = np.argsort(-arr)[:n]
+        # Obtain the probabilities for the n most-probable terms for position i
+        prob_top_n = arr[top_n]
+        # Compute non-uniformity value per position to compute confidence later
+        non_uniformity_scores.append(compute_non_uniformity(prob_top_n))
+        logging.debug('Predicted words: {0} Probability: {1}'.format(word.encode('utf8'), probabilities[i - 1]))
+        logging.debug('Top {0} probs: {1}'.format(n, prob_top_n))
+        logging.debug('Non-uniformity score: {0}'.format(non_uniformity_scores[i - 1]))
+        if word == '#END#' or i >= SEQUENCE_LENGTH - 1:
+            confidence = compute_confidence(probabilities, non_uniformity_scores)
+            return ' '.join(words), confidence
+        else:
+            x_sentence[0][i] = tok
+            if word != '#START#':
+                words.append(word)
+
+
 # Load the caption data
-dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
+#dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
+dataset = json.load(open(r'C:\Users\crobe\Google Drive\DataMiningGroup\Code\captioning/image_caption_dataset.json'))['images']
+
+
+results_dataset = []
 
 # Predict 5 captions per image for all of the images in the dataset
 for chunk in chunks(dataset, 256):
     cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
     for i, image in enumerate(chunk):
-        fn = r'/home/rcamachobarranco/datasets/caption_dataset/{}/{}'.format(image['filepath'], image['filename'])
+        fn = r'D:\Yelp\caption_dataset/{}/{}'.format(image['filepath'], image['filename'])
+        #fn = r'/home/rcamachobarranco/datasets/caption_dataset/{}/{}'.format(image['filepath'], image['filename'])
         try:
+            # # Obtain the original image filenames and id
+            # img_dataset_dict = dict()
+            # img_dataset_dict["license"] = 3
+            # img_dataset_dict["url"] = image['filepath']
+            # img_dataset_dict["file_name"] = image['filename']
+            # img_dataset_dict["id"] = int(image['photoid'])
+            # img_dataset_dict["width"] = 224
+            # img_dataset_dict["date_captured"] = "Unknown"
+            # img_dataset_dict["height"] = 224
+            # eval_img_dataset.append(img_dataset_dict)
+            # ann_dataset_dict = dict()
+            # ann_dataset_dict["image_id"] = int(image['photoid'])
+            # ann_dataset_dict["id"] = int(image['photoid'])
+            # ann_dataset_dict["caption"] = image['sentences'][0]['raw'].encode('utf8')
+            # ann_dataset_dict["split"] = image['split'].encode('utf8')
+            # eval_ann_dataset.append(ann_dataset_dict)
+
+            result_dataset_dict = dict()
             im = plt.imread(fn)
             cnn_input = prep_image(im)
             features = get_cnn_features(cnn_input)
             predicted = []
+            confidence_scores = []
+            result_dataset_dict['image_id'] = int(image['photoid'])
             for _ in range(5):
-                predicted.append(predict(features).encode('utf8'))
+                new_prediction, new_score = predict(features)
+                # if new_prediction not in predicted:
+                #     confidence_scores.append(new_score)
+                #     predicted.append(new_prediction.encode('utf8'))
+                confidence_scores.append(new_score)
+                predicted.append(new_prediction.encode('utf8'))
+                result_dataset_dict['caption'] = new_prediction.encode('utf8')
+                result_dataset_dict['confidence_score'] = new_score
+                if image["split"] in ["test"]:
+                    results_dataset.append(result_dataset_dict)
             image['predicted caption'] = predicted
-            image['predicted label'] = CLASSES[np.argmax(features)]
-            print str(i) + ': Actual: ' + image['sentences'][0]['raw'].encode('utf8') + ' Predicted: ' + '; '.join(
-                predicted)
+
+            best_caption = np.argmax(confidence_scores)
+            image['top caption'] = predicted[best_caption]
+            image['confidence'] = confidence_scores
+            image['top confidence'] = confidence_scores[best_caption]
+
+            label_idx = np.argmax(features)
+            image['predicted label'] = CLASSES[label_idx]
+
+            logging.debug('Actual label: {0}, Predicted label: {1}'.format(image['label'], CLASSES[label_idx]))
+            logging.info('Actual caption: {0}'.format(image['sentences'][0]['raw'].encode('utf8')))
+            for idx in range(len(predicted)):
+                logging.debug('Generated caption: {0} ; Confidence: {1}'.format(predicted[idx], confidence_scores[idx]))
+            logging.info(
+                'Best caption: {0}; Confidence: {1}'.format(predicted[best_caption], confidence_scores[best_caption]))
+
         except IOError:
             continue
 
 # Save the dictionary to a JSON file
-with open('/home/rcamachobarranco/datasets/caption_dataset/results_yelp_84_62.json', 'w') as outfile:
+#with open('/home/rcamachobarranco/datasets/caption_dataset/results_yelp_webpage.json', 'w') as outfile:
+with open('results_yelp_webpage.json', 'w') as outfile:
     # We use dump_dict to create the proper JSON structure
     dump_dict = dict()
-    dump_dict['images'] = dataset_images
+    dump_dict['images'] = dataset
     json.dump(dump_dict, outfile)
+
+# eval_dataset["images"] = eval_img_dataset
+# eval_dataset["annotations"] = eval_ann_dataset
+#
+# with open('/home/rcamachobarranco/datasets/caption_dataset/annotations/captions_yelp_23323.json', 'w') as outfile:
+#     json.dump(eval_dataset, outfile)
+
+with open('captions_yelp_nic_results_webpage.json', 'w') as outfile:
+#with open('/home/rcamachobarranco/datasets/caption_dataset/results/captions_yelp_nic_results_webpage.json', 'w') as outfile:
+    json.dump(results_dataset, outfile)

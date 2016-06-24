@@ -1,3 +1,7 @@
+# CNN for image prediction with color images.
+# Based on Sander Dieleman's Theano tutorial available at:
+# https://github.com/benanne/theano-tutorial/blob/master/6_convnet.py
+# See LICENSE file for more information regarding copyright.
 import numpy as np
 import theano
 import theano.tensor as T

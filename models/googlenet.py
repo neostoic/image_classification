@@ -3,7 +3,9 @@
 # Original source:
 # https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet
 # License: unrestricted use
-
+# Taken from the Lasagne model zoo, available at:
+# https://github.com/Lasagne/Recipes/tree/master/modelzoo
+#
 # Download pretrained weights from:
 # https://s3.amazonaws.com/lasagne/recipes/pretrained/imagenet/blvc_googlenet.pkl
 

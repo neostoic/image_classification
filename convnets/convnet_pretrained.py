@@ -1,4 +1,7 @@
-# Train two simple deep CNN on the Yelp using batch processing in Griffin cluster.
+# Train two simple deep CNN on the Yelp data using batch processing in Griffin cluster.
+# Based on the Keras examples by Francois Chollet, available at:
+# https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
+
 # GPU Usage: `THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python convnet_pretrained.py`
 
 from __future__ import print_function

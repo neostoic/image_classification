@@ -1,0 +1,13 @@
++-------------------------+--------------------------------+--------+------------+---------------+
+|       business_id       |              name              | state  |    city    | review_count  |
++-------------------------+--------------------------------+--------+------------+---------------+
+| 4bEjOyTaDG24SY5TxsaUNQ  | Mon Ami Gabi                   | NV     | Las Vegas  | 5642          |
+| zt1TpTuJ6y9n551sw9TaEg  | Wicked Spoon                   | NV     | Las Vegas  | 4558          |
+| 2e2e7WgqU1BnpxmQL5jbfw  | Earl of Sandwich               | NV     | Las Vegas  | 4452          |
+| sIyHTizqAiGu12XMLX3N3g  | Bacchanal Buffet               | NV     | Las Vegas  | 4390          |
+| aGbjLWzcrnEx2ZmMCFm3EA  | Gordon Ramsay BurGR            | NV     | Las Vegas  | 3811          |
+| Xhg93cMdemu5pAMkDoEdtQ  | Serendipity 3                  | NV     | Las Vegas  | 3478          |
+| YNQgak-ZLtYJQxlDwN-qIg  | The Buffet                     | NV     | Las Vegas  | 3281          |
+| QbmcCE_cLq4WO8ZMKImaLw  | Hash House A Go Go             | NV     | Las Vegas  | 3014          |
+| CZjcFdvJhksq9dy58NVEzw  | The Buffet at Bellagio         | NV     | Las Vegas  | 3014          |
+| AtjsjFzalWqJ7S9DUFQ4bw  | The Cosmopolitan of Las Vegas  | NV     | Las Vegas  | 2988          |

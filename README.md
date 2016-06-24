@@ -42,8 +42,8 @@ purpose:
 0. **models:** This folder contains scripts that define and initialize the structure of each of the models that were tested, including VGG-16, VGG-19 and GoogleNet. We also include the script for Inception_v3 but this model did not work.
 0. **other:** This folder contains scripts that were used for exploration of the different libraries available, but are not part of the framework. The code inside this folder is not documented.
 0. **preprocessing:** Includes code to preprocess the images and the reviews.
+0. **review_mapping:** Includes the code that maps a review to an image.
 0. `__init__.py`: This file is empty and it is only included as a requirement for all packages.
-0. `convnet.py`: This is the main script for the image classification algorithm.
 0. `keras.sh` and `lasagne.sh`: Auxiliary scripts that are used for job scheduling in a SLURM based cluster.
 
 ##Documentation
