@@ -91,7 +91,7 @@ def train(model_='VGG_16'):
     elif model_ in MODELS[3]:
         net = inception_v3.build_network()
         weights = pickle.load(open(model_path + 'inception_v3.pkl', 'rb'))
-    net_prob = net['softmax']
+        net_prob = net['softmax']
 
     lasagne.layers.set_all_param_values(net_prob, weights['param values'])
     logging.info('Finished setting up weights')
