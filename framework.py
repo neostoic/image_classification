@@ -13,6 +13,7 @@ if __name__ == '__main__':
     freeze_support()
     # HARDCODED: CHANGE THIS TO THE PATH WHERE THE PHOTOS ARE DOWNLOADED:
     path_photos = r'D:/Yelp/restaurant_photos/'
+
     move_images(path_photos)
     create_train_test_data(folds=6)
     train('googlenet')
