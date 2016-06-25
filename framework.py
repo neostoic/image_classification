@@ -22,4 +22,3 @@ if __name__ == '__main__':
     get_labels_features()
     train_rnn()
     captioning()
-

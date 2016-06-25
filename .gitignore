@@ -4,7 +4,7 @@ run/shm/*
 *desktop.ini
 captioning/convnet_keras*
 captioning/numpy-1.11.0*
-
+captioning/results/*
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files build by Visual Studio
@@ -34,5 +34,27 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.pyc
 
-other/*
-other
+review_mapping/images/*
+review_mapping/results/*
+plot/percent-bachelors-degrees-women-usa.png
+plot/test.py
+preprocessing/COCO Preprocessing.ipynb
+preprocessing/COCO Preprocessing.py
+preprocessing/Finetuning for Image Classification.ipynb
+preprocessing/Finetuning for Image Classification.py
+captioning/captions_yelp.json
+captioning/captions_yelp_nic_results_webpage.json
+captioning/image_caption_dataset.json
+captioning/image_caption_with_cnn_features.pkl
+captioning/lstm_yelp_trained.pkl
+captioning/results_yelp_87_71.json
+captioning/results_yelp_webpage.json
+other/stratified_split.sql
+review_mapping/mon_ami_gabi_photos.json
+review_mapping/mon_ami_gabi_photos_topics.json
+review_mapping/mon_ami_gabi_reviews.json
+review_mapping/mon_ami_gabi_reviews_suggestions.json
+review_mapping/mon_ami_gabi_reviews_suggestions_2.json
+review_mapping/mon_ami_gabi_reviews_topics.json
+review_mapping/MonAmiGabiCapsTrainingLDAtopicModel.mm
+review_mapping/MonAmiGabiCapsTrainingLDAtopicModel.mm.state
