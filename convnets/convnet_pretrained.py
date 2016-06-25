@@ -27,9 +27,9 @@ def train(model_='VGG_16'):
     nb_classes = 5
     nb_epoch = 10
     data_augmentation = False
-    train_pkl = r'../data/restaurant_photos_with_labels_train.pkl'
-    test_pkl = r'../data/restaurant_photos_with_labels_test.pkl'
-    img_path = r'../data/restaurant_photos/'
+    train_pkl = r'./data/restaurant_photos_with_labels_train.pkl'
+    test_pkl = r'./data/restaurant_photos_with_labels_test.pkl'
+    img_path = r'./data/restaurant_photos/'
 
     # input image dimensions
     if model_ in MODELS[0:2]:

@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 
-reviews = pd.read_pickle('./data/restaurant_reviews.pkl')
+reviews = pd.read_pickle('../data/restaurant_reviews.pkl')
 restaurantName="reviews"
 captions=reviews['caption']
 reviews=reviews['text']

@@ -9,10 +9,10 @@ from gensim import corpora, models
 from gensim.utils import simple_preprocess
 import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-from CreateBoWCaptions import createRestaurantDictionary,extract_reviews
+from LDAUtilities import createRestaurantDictionary,extract_reviews
 
 fileName='MonAmiGabiTraining';
-captionsPklFileName='./data/MonAmiGabiCapsTraining.pkl';
+captionsPklFileName='../data/MonAmiGabiCapsTraining.pkl';
 restaurantName='Mon Ami Gabi';
 method = "captionWordsOnly";
 #method= "stopwords"
@@ -23,7 +23,7 @@ documents=extract_reviews('./data/'+fileName+'.pkl');
 #Using the dictionary processed with the corresponding captions
 #The text from the captions gets the STOPWORDS removed through the createCaptionDictionary
 try:
-    captionsDict=corpora.Dictionary.load('./data/MonAmiGabiCapsTraining.dict');
+    captionsDict=corpora.Dictionary.load('../data/MonAmiGabiCapsTraining.dict');
 except FileNotFoundError:
     createRestaurantDictionary(captionsPklFileName, restaurantName);
 
@@ -51,11 +51,11 @@ texts = [[token for token in text if frequency[token] > 1] for text in texts];
 
 #Dictionary for the reviews
 dictionary = corpora.Dictionary(texts);
-dictionary.save('./data/'+fileName+'.dict') # store the dictionary, for future reference
+dictionary.save('../data/'+fileName+'.dict') # store the dictionary, for future reference
 logging.info('Dictionary saved');
 
 corpus = [dictionary.doc2bow(text) for text in texts];
-corpora.MmCorpus.serialize('./data/'+fileName+'.mm', corpus) # store to disk, for later use
+corpora.MmCorpus.serialize('../data/'+fileName+'.mm', corpus) # store to disk, for later use
 logging.info('Corpus saved')
 #print(corpus)
 
@@ -66,4 +66,4 @@ print("Creating LDA") #Not really good online unless topics don't change too muc
 lda = gensim.models.LdaModel(corpus,id2word=dictionary,num_topics=num, passes=15)
 lda.print_topics(num)
 
-lda.save(fileName+'LDAtopicModel.mm');
+lda.save(r'../data/' + fileName+'LDAtopicModel.mm');

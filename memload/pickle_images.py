@@ -13,10 +13,10 @@ LABELS = {cls: i for i, cls in enumerate(CLASSES)}
 model_list = ['VGG_16', 'VGG_19', 'googlenet', 'inception_v3']
 
 
-input_dir = r'C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels_'
-output_dir = r'D:\Yelp\datasets'
+input_dir = r'./data/restaurant_photos_with_labels_'
+output_dir = r'./data/'
 
-img_path = r'D:\Yelp\restaurant_photos\\'
+img_path = r'./data/restaurant_photos/'
 id_label = 'photo_id'
 
 batches = 24
@@ -77,8 +77,8 @@ def pickle_dataset(input_pkl, output_pkl, img_path, id_label, PIXELS):
 for pix in PIXELS:
     output_files = []
     for k in range(1, batches):
-        output_files.append(output_dir + '\\train_images_batch' + str(k) + '_' + str(pix))
-    output_files.append(output_dir + '\\test_images_' + str(pix))
+        output_files.append(output_dir + '/train_images_batch' + str(k) + '_' + str(pix))
+    output_files.append(output_dir + '/test_images_' + str(pix))
     for i, input_file in enumerate(input_files):
         print i
         pickle_dataset(input_file, output_files[i], img_path, id_label, pix)

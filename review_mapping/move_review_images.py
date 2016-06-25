@@ -25,7 +25,7 @@ def copy_file(src, dest):
         print('Error: %s' % e.strerror)
 
 
-img_dir = r'D:\Yelp\restaurant_photos\\'
+img_dir = r'./data/restaurant_photos/'
 target_dir = r'.\results/'
 reviews_suggestions = r"mon_ami_gabi_reviews_suggestions_2.json"
 

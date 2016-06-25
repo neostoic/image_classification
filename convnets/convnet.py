@@ -63,11 +63,11 @@ def train(model_='VGG_16'):
     data_augmentation = False
 
     # Initialize paths relative to our folder
-    train_pkl = r'../data/restaurant_photos_with_labels_train.pkl'
-    test_pkl = r'../data/restaurant_photos_with_labels_test.pkl'
-    img_path = r'../data/restaurant_photos/'
-    CLASSES = pickle.load(open(r'../data/categories.pkl', 'rb'))
-    model_path = r'../data/models/'
+    train_pkl = r'./data/restaurant_photos_with_labels_train.pkl'
+    test_pkl = r'./data/restaurant_photos_with_labels_test.pkl'
+    img_path = r'./data/restaurant_photos/'
+    CLASSES = pickle.load(open(r'./data/categories.pkl', 'rb'))
+    model_path = r'./data/models/'
 
     # input image dimensions
     if model_ in MODELS[0:3]:
@@ -166,7 +166,7 @@ def train(model_='VGG_16'):
 
                     # Store the model if accuracy is above 86%
                     if acc_tot > 0.86:
-                        np.savez(r'../data/googlenet_model.npz', *lasagne.layers.get_all_param_values(output_layer))
+                        np.savez(r'./data/googlenet_model.npz', *lasagne.layers.get_all_param_values(output_layer))
 
                     logging.info('Epoch {0} Train_loss {1} Test_loss {2} Test_accuracy {3}'.format(epoch, train_loss, loss_tot, acc_tot * 100))
 

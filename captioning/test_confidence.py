@@ -45,7 +45,7 @@ cnn_output_layer = NonlinearityLayer(cnn_feature_layer,
 get_cnn_features = theano.function([cnn_input_var], lasagne.layers.get_output(cnn_feature_layer))
 
 # Load the pretrained weights into the network
-with np.load('/home/rcamachobarranco/datasets/googlenet_model_84_69.npz') as f:
+with np.load(r'./data/googlenet_model.npz') as f:
     model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 logging.info('Read parameters from file')
 
@@ -88,8 +88,7 @@ BATCH_SIZE = 1
 CNN_FEATURE_SIZE = 5
 EMBEDDING_SIZE = 512
 
-d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_yelp_trained.pkl', mode='rb'))
-# d = pickle.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/lstm_coco_trained.pkl', mode='rb'))
+d = pickle.load(open(r'./data/trained_lstm.pkl', mode='rb'))
 vocab = d['vocab']
 word_to_index = d['word_to_index']
 index_to_word = d['index_to_word']
@@ -222,12 +221,12 @@ def predict(x_cnn):
 
 
 # Load the caption data
-dataset = json.load(open(r'/home/rcamachobarranco/datasets/caption_dataset/image_caption_dataset.json'))['images']
+dataset = json.load(open(r'./data/image_caption_dataset.json'))['images']
 
 chunk = dataset[1:10]
 cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
 for i, image in enumerate(chunk):
-    fn = r'/home/rcamachobarranco/datasets/caption_dataset/{}/{}'.format(image['filepath'], image['filename'])
+    fn = r'./data/restaurant_photos_split/{}/{}'.format(image['filepath'], image['filename'])
     try:
         im = plt.imread(fn)
         cnn_input = prep_image(im)
@@ -252,7 +251,7 @@ for i, image in enumerate(chunk):
         # for chunk in chunks(dataset, 256):
         #     cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
         #     for i, image in enumerate(chunk):
-        #         fn = r'/home/rcamachobarranco/datasets/caption_dataset/{}/{}'.format(image['filepath'],
+        #         fn = r'./data/restaurant_photos_split/{}/{}'.format(image['filepath'],
         #                                                                              image['filename'])
         #         try:
         #             im = plt.imread(fn)

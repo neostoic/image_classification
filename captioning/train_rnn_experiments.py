@@ -261,8 +261,7 @@ def compute_bleu(batch_in, predicted):
 
 if __name__ == '__main__':
     # Load the preprocessed dataset containing features extracted by GoogLeNet
-    # dataset = pickle.load(open('/home/rcamachobarranco/datasets/caption_dataset/image_caption_with_cnn_features.pkl'))
-    with open('image_caption_with_cnn_features.pkl', 'rb') as f_in:
+    with open('./data/image_caption_with_cnn_features.pkl', 'rb') as f_in:
         dataset = pickle.load(f_in)
 
     # Count words occuring at least 3 times and construct mapping int <-> word
@@ -338,5 +337,5 @@ if __name__ == '__main__':
 
                     # Save trained model
                     pickle.dump(d, open(
-                        r'lstm_yelp_trained_{}_{}_{}_{}.pkl'.format(sequence_length, batch_size, embedding_size, lr),
+                        r'trained_lstm_{}_{}_{}_{}.pkl'.format(sequence_length, batch_size, embedding_size, lr),
                         'wb'), protocol=pickle.HIGHEST_PROTOCOL)

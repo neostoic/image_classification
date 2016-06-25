@@ -57,7 +57,7 @@ def iter_rev(dump_file):
 
 
 def createRestaurantDictionary(pklFileName, restaurantName):
-    documents = extract_reviews('./data/' + pklFileName + '.pkl');
+    documents = extract_reviews('../data/' + pklFileName + '.pkl');
     restaurantName = restaurantName.lower().split();
     city = ['vegas']
     more_stopwords.extend(restaurantName)
@@ -73,7 +73,7 @@ def createRestaurantDictionary(pklFileName, restaurantName):
             frequency[token] += 1
     texts = [[token for token in text if frequency[token] > 1] for text in texts];
     dictionaryW = corpora.Dictionary(texts);
-    dictionaryW.save('./data/' + pklFileName + '.dict')  # store the dictionary, for future reference
+    dictionaryW.save('../data/' + pklFileName + '.dict')  # store the dictionary, for future reference
     return dictionaryW
 
 
@@ -235,16 +235,16 @@ def build_database():
     c.close()
 
 
-MONAMIGABI_PHOTOS = r"mon_ami_gabi_photos.json"
-images_topics = r"mon_ami_gabi_photos_topics.json"
-reviews_topics = r"mon_ami_gabi_reviews_topics.json"
-reviews_suggestions = r"mon_ami_gabi_reviews_suggestions_2.json"
-MONAMIGABI_REVIEWS = r"mon_ami_gabi_reviews.json"
-PHOTOS_PATH = r'D:\Yelp\restaurant_photos/'
-IMAGE_PATH = r'C:\Users\crobe\Google Drive\DataMiningGroup\Code\review_mapping\images'
+MONAMIGABI_PHOTOS = r"../data/mon_ami_gabi_photos.json"
+images_topics = r"../data/mon_ami_gabi_photos_topics.json"
+reviews_topics = r"../data/mon_ami_gabi_reviews_topics.json"
+reviews_suggestions = r"../data/mon_ami_gabi_reviews_suggestions_2.json"
+MONAMIGABI_REVIEWS = r"../data/mon_ami_gabi_reviews.json"
+PHOTOS_PATH = r'../data/restaurant_photos/'
+IMAGE_PATH = r'../review_mapping/images'
 # Load dataset and initialize DB
-DB_FILE = r"C:\Users\crobe\Google Drive\DataMiningGroup\suggestions_monamigabi_2.db"
-lda_model = models.LdaModel.load(r'MonAmiGabiTrainingLDAtopicModel.mm',
+DB_FILE = r"../data/suggestions_monamigabi_2.db"
+lda_model = models.LdaModel.load(r'../data/MonAmiGabiTrainingLDAtopicModel.mm',
                                  mmap='r')
 lda_model.print_topics(20);
 logging.info('Assigning id2word')

@@ -63,7 +63,7 @@ def iter_rev(dump_file):
 
 
 def createRestaurantDictionary(pklFileName,restaurantName):
-    documents=extract_reviews('./data/'+pklFileName+'.pkl');
+    documents=extract_reviews('../data/'+pklFileName+'.pkl');
     restaurantName=restaurantName.lower().split();
     city=['vegas']
     more_stopwords.extend(restaurantName)
@@ -79,7 +79,7 @@ def createRestaurantDictionary(pklFileName,restaurantName):
            frequency[token] += 1
     texts = [[token for token in text if frequency[token] > 1] for text in texts];
     dictionaryW = corpora.Dictionary(texts);
-    dictionaryW.save('./data/'+pklFileName+'.dict') # store the dictionary, for future reference
+    dictionaryW.save('../data/'+pklFileName+'.dict') # store the dictionary, for future reference
     return dictionaryW
 
 
@@ -144,22 +144,22 @@ def getTopicNumAndMatchWords(document):
 #fileName='MonAmiGabiCapsTraining';
 #restaurantName='Mon Ami Gabi';
 #dictionaryR=createRestaurantDictionary(fileName,restaurantName)
-#dictionaryR = corpora.Dictionary.load('./data/'+fileName+'.dict')
+#dictionaryR = corpora.Dictionary.load('../data/'+fileName+'.dict')
 #for idx in dictionaryR:
 #    print(dictionaryR[idx])
 
 import pandas as pd
 from gensim import corpora, models
 ################Loading LDA model
-full='./data/wiki_results/reviews';
+full='../data/wiki_results/reviews';
 # MonAmiCaps='./MonAmiGabiCaps'
-MonAmiFull='./MonAmiGabi'
+MonAmiFull='../data/MonAmiGabi'
 lda_model=models.LdaModel.load(MonAmiFull+'TrainingLDAtopicModel.mm',mmap='r')
 lda_model.print_topics(20);
 logging.info('Assigning id2word')
 id2word=lda_model.id2word;
 
-# reviews=iter_rev('./data/MonAmiGabiTesting.pkl');
+reviews=iter_rev('../data/MonAmiGabiTesting.pkl');
 # print(review for review in reviews);
 # review=reviews[1];
 # getTopTopic(review)
@@ -167,11 +167,11 @@ id2word=lda_model.id2word;
 # print(reviews)
 
 logging.info('Evaluating LDA reviews')
-rev_stream = (tokens for tokens in iter_rev('./data/MonAmiGabiTesting.pkl'));  # generator
+rev_stream = (tokens for tokens in iter_rev('../data/MonAmiGabiTesting.pkl'));  # generator
 test_reviews = list(itertools.islice(rev_stream,1,5000));
 intra_inter(lda_model, test_reviews)
 logging.info('Evaluating LDA captions')
-caption_stream = (tokens for tokens in iter_rev('./data/MonAmiGabiCapsTesting.pkl'));  # generator
+caption_stream = (tokens for tokens in iter_rev('../data/MonAmiGabiCapsTesting.pkl'));  # generator
 test_captions = list(itertools.islice(caption_stream,5000));
 #intra_inter(lda_model, test_captions)
 totalRevs=len(reviews);
@@ -184,10 +184,10 @@ print(totalRevs)
 #print(captions)
 
 #logging.info('Opening photos')
-#photos = pd.read_pickle('./data/restaurant_photos.pkl');
+#photos = pd.read_pickle('../data/restaurant_photos.pkl');
 
 # logging.info('Opening business')
-# business = pd.read_pickle('./data/restaurant_business.pkl');
+# business = pd.read_pickle('../data/restaurant_business.pkl');
 # count =1;
 # restaurantName="Mon Ami Gabi"
 # restaurantId='4bEjOyTaDG24SY5TxsaUNQ';
@@ -203,9 +203,9 @@ print(totalRevs)
 #print(photos['business_id'][count])
 
 # Load the caption data
-# photos = pd.read_pickle('./data/mon_ami_gabi_photos.pkl')
+# photos = pd.read_pickle('../data/mon_ami_gabi_photos.pkl')
 # dataset = json.load(
-#    open('./data/image_caption_dataset_no_business.json'))
+#    open('../data/image_caption_dataset_no_business.json'))
 #
 # dataset_images = dataset['images']
 # logging.info('Getting business id and topics')
@@ -217,13 +217,13 @@ print(totalRevs)
 #    logging.info(item['topic_info'])
 #
 # logging.info('Saving image_caption_dataset')
-# with open("./data/image_caption_dataset.json", "w") as outfile:
+# with open("../data/image_caption_dataset.json", "w") as outfile:
 #     dump_dict = dict()
 #     dump_dict['images'] = dataset_images
 #     json.dump(dump_dict, outfile)
 
 # logging.info('Opening business')
-# business = pd.read_pickle('./data/restaurant_business.pkl');
+# business = pd.read_pickle('../data/restaurant_business.pkl');
 # count =1;
 # restaurantName="Mon Ami Gabi"
 # restaurantId='4bEjOyTaDG24SY5TxsaUNQ'
@@ -231,7 +231,7 @@ print(totalRevs)
 
 # logging.info('Loading image_caption_dataset')
 # dataset = json.load(
-#    open('./data/image_caption_dataset.json'))
+#    open('../data/image_caption_dataset.json'))
 #
 # dataset_images = dataset['images']
 #
@@ -246,7 +246,7 @@ print(totalRevs)
 #
 # print(dataset)
 # logging.info('Saving mon_ami_image_dataset')
-# with open("./data/mon_ami_image_dataset.json", "w") as outfile:
+# with open("../data/mon_ami_image_dataset.json", "w") as outfile:
 #     dump_dict = dict()
 #     dump_dict['images'] = dataset
 #     json.dump(dump_dict, outfile)
@@ -255,13 +255,13 @@ print(totalRevs)
 ###################Creating dataset : images for each word in topic
 # logging.info('Loading image_caption_dataset')
 # dataset_mon_ami_img = json.load(
-#    open('./data/mon_ami_image_dataset.json'))
+#    open('../data/mon_ami_image_dataset.json'))
 #
 # dataset_mon_ami_img=dataset_mon_ami_img['images']
 # dataset=[]
 # recommended_photos={}
 # logging.info('Opening reviews')
-# reviews = extract_reviews('./data/MonAmiGabiTesting.pkl');
+# reviews = extract_reviews('../data/MonAmiGabiTesting.pkl');
 # for i in range(1,5):
 #     topic = lda_model.show_topic(i)
 #     # print(topic)
@@ -294,14 +294,14 @@ print(totalRevs)
 #     recommended_photos={}
 #
 # logging.info('Saving mon_ami_recomended_image_dataset')
-# with open("./data/mon_ami_recomended_image_dataset2.json", "w") as outfile:
+# with open("../data/mon_ami_recomended_image_dataset2.json", "w") as outfile:
 #     dump_dict = dict()
 #     dump_dict['images'] = dataset
 #     json.dump(dump_dict, outfile)
 
 logging.info('Loading image_caption_dataset')
 dataset_mon_ami_img = json.load(
-   open("./data/mon_ami_recomended_image_dataset2.json"))
+   open("../data/mon_ami_recomended_image_dataset2.json"))
 
 dataset=dataset_mon_ami_img['images']
 

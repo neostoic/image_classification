@@ -22,11 +22,11 @@ from lasagne.utils import floatX
 from models import googlenet
 
 # Setup to obtain predicted labels
-train_pkl = r'../data/restaurant_photos_with_labels_train.pkl'
-test_pkl = r'../data/restaurant_photos_with_labels_test.pkl'
-img_path = r'../data/restaurant_photos/'
-CLASSES = pickle.load(open(r'../data/categories.pkl', 'rb'))
-model_path = r'../data/models/'
+train_pkl = r'./data/restaurant_photos_with_labels_train.pkl'
+test_pkl = r'./data/restaurant_photos_with_labels_test.pkl'
+img_path = r'./data/restaurant_photos/'
+CLASSES = pickle.load(open(r'./data/categories.pkl', 'rb'))
+model_path = r'./data/models/'
 
 
 def prep_image(im):
@@ -75,7 +75,7 @@ def init_model():
     pred_fn = theano.function([X_sym], prediction)
 
     # Load the pretrained weights into the network
-    with np.load(r'../data/googlenet_model.npz') as f:
+    with np.load(r'./data/googlenet_model.npz') as f:
         model_param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 
     lasagne.layers.set_all_param_values(cnn_output_layer, model_param_values)
@@ -92,12 +92,12 @@ def get_labels_features():
     # Initialize model and obtain prediction function
     get_cnn_features, pred_fn = init_model()
     # Load the caption data
-    dataset = json.load(open(r'../data/image_caption_dataset.json'))['images']
+    dataset = json.load(open(r'./data/image_caption_dataset.json'))['images']
     # Obtain the predicted label for each image and store it in a dictionary
     for chunk in chunks(dataset, 256):
         cnn_input = floatX(np.zeros((len(chunk), 3, 224, 224)))
         for i, image in enumerate(chunk):
-            fn = r'../data/restaurant_photos_split/{}/{}'.format(image['filepath'], image['filename'])
+            fn = r'./data/restaurant_photos_split/{}/{}'.format(image['filepath'], image['filename'])
             try:
                 im = plt.imread(fn)
                 cnn_input[i] = prep_image(im)
@@ -113,12 +113,12 @@ def get_labels_features():
             image['cnn features'] = features[i]
 
     # Store the dictionary with the results as a JSON file
-    with open(r'../data/image_caption_dataset_labels.json', 'wb') as outfile:
+    with open(r'./data/image_caption_dataset_labels.json', 'wb') as outfile:
         dump_dict = dict()
         dump_dict['images'] = dataset
         json.dump(dump_dict, outfile)
 
     # Save the dataset as a compressed pickle file
     pickle.dump(dataset,
-                open(r'../data/image_caption_with_cnn_features.pkl', 'w'),
+                open(r'./data/image_caption_with_cnn_features.pkl', 'w'),
                 protocol=pickle.HIGHEST_PROTOCOL)

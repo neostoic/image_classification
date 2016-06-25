@@ -24,7 +24,7 @@ def extract_reviews(dump_file):
     return revs
 
 fileName='MonAmiGabiTraining';
-training=extract_reviews('./data/'+fileName+'.pkl');
+training=extract_reviews('../data/'+fileName+'.pkl');
 
 documents=training;
 more_stopwords=['great','good','like','le','la','time', 'think','wasnt','est','ve','et','les', 'restaurant','nice','service','yelp','www','http','com','select'];
@@ -49,11 +49,11 @@ from pprint import pprint   # pretty-printer
 #pprint(texts)
 
 dictionary = corpora.Dictionary(texts)
-dictionary.save('./data/'+fileName+'.dict') # store the dictionary, for future reference
+dictionary.save('../data/'+fileName+'.dict') # store the dictionary, for future reference
 print(dictionary)
 
 corpus = [dictionary.doc2bow(text) for text in texts]
-corpora.MmCorpus.serialize('./data/'+fileName+'.mm', corpus) # store to disk, for later use
+corpora.MmCorpus.serialize('../data/'+fileName+'.mm', corpus) # store to disk, for later use
 #print(corpus)
 
 #print("\n Build DTM")
@@ -81,4 +81,4 @@ print("Creating LDA") #Not really good online unless topics don't change too muc
 lda = gensim.models.LdaModel(corpus,id2word=dictionary,num_topics=num, passes=5)
 lda.print_topics(num)
 
-lda.save(fileName+'LDAtopicModel.mm');
+lda.save(r'../data/' +fileName+'LDAtopicModel.mm');

@@ -1,7 +1,5 @@
 # Script that splits data into folds. The last fold is testing data while the others are training data
 #
-# Usage:  pickle_train_test_data.py pickled_data number_of_folds
-# Example pickle_...py "C:\Users\crobe\Google Drive\DataMiningGroup\Datasets\restaurant_photos_with_labels.pkl" 6
 import cPickle
 import os
 import sys
@@ -10,7 +8,8 @@ import pandas as pd
 from sklearn.cross_validation import StratifiedKFold
 
 
-def create_train_test_data(filename, folds=6):
+def create_train_test_data(folds=6):
+    filename = r'./data/restaurant_photos_with_labels.pkl'
     # Output will be named as the input filename but appending _train.pkl or _test.pkl at the end.
     train_fn = os.path.splitext(filename)[0] + '_train.pkl'
     test_fn = os.path.splitext(filename)[0] + '_test.pkl'

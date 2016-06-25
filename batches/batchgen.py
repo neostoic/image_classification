@@ -22,7 +22,7 @@ import produce
 
 # BatchGen object generates an iterator for the restaurant photos
 class BatchGen:
-    def __init__(self, batch_fn, seed=None, num_workers=8, input_pkl='../data/restaurant_photos_with_labels_train.pkl',
+    def __init__(self, batch_fn, seed=None, num_workers=8, input_pkl='./data/restaurant_photos_with_labels_train.pkl',
                  img_path='.', dtype='float64', grayscale=False, pixels=64, model='VGG_16', batch_size=32):
         self.batch_fn = batch_fn
         self.batch_size = batch_size
