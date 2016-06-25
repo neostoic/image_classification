@@ -18,7 +18,7 @@ def create_train_test_data(folds=6):
     df = pd.read_pickle(filename)
     # Change the label column to categorical type, and store the categories so that we know what they mean later
     df['label'] = df['label'].astype('category')
-    with open('..\data\categories.pkl', 'wb') as f:
+    with open('.\data\categories.pkl', 'wb') as f:
         cPickle.dump(df['label'].cat.categories, f, protocol=cPickle.HIGHEST_PROTOCOL)
     # Change from string to int
     df['label'] = df['label'].cat.codes.values
